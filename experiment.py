@@ -11,6 +11,5 @@ for i in range(1,iterations+1) :
     prompt_str = "Enter test " + str(i) + " value: "
     results.append(raw_input(prompt_str))
 for i in results : f.write(str(i) + '\n')
-f.write('\n')
 f.close()
 os.system('cat experiment.tmp | ./covariance')
