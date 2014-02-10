@@ -1,5 +1,6 @@
 from BrickPi import *   #import BrickPi.py file to use BrickPi operations
 from week1 import *
+import sys
 
 def bumperRun():
     BrickPiSetup()  # setup the serial port for communication
@@ -69,7 +70,10 @@ def wallStick():
             print speedL, speedR, wheelDiff
         time.sleep(.1)     # sleep for 10 ms
 
+if sys.argv[1] == "task1":
+    bumperRun()
+elif sys.argv[1] == "task2":
+    sonicStick()
+else :
+    wallStick()
 
-#bumperRun()
-#sonicStick()
-wallStick()
