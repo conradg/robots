@@ -55,20 +55,20 @@ def wallStick():
 
     BrickPiSetupSensors()   #Send the properties of sensors to BrickPi
 
-    startMotor(-40)
+    startMotor(-30)
 
     while True:
         result = BrickPiUpdateValues()  # Ask BrickPi to update values for sensors/motors
         if not result :
             dist = BrickPi.Sensor[PORT_1]
             print dist
-            wheelDiff = 1.5*(30-dist)
+            wheelDiff = 0.5*(30-dist)
             speedL = getMotorSpeed(LEFT)
             speedR = getMotorSpeed(RIGHT)
-            setMotorSpeed(-40 + wheelDiff, LEFT)
-            setMotorSpeed(-40 - wheelDiff, RIGHT)
+            setMotorSpeed(-30 + wheelDiff, LEFT)
+            setMotorSpeed(-30 - wheelDiff, RIGHT)
             print speedL, speedR, wheelDiff
-        time.sleep(.1)     # sleep for 10 ms
+        time.sleep(.01)     # sleep for 10 ms
 
 if sys.argv[1] == "task1":
     bumperRun()
