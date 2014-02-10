@@ -44,7 +44,7 @@ def calibrateTolerance():
         BrickPiUpdateValues()
         encL = BrickPi.Encoder[LEFT]
         encR = BrickPi.Encoder[RIGHT]
-        turn_acw(90)
+        turn_cw(90)
         BrickPiUpdateValues()
         encLNew = BrickPi.Encoder[LEFT]
         encRNew = BrickPi.Encoder[RIGHT]
@@ -73,7 +73,7 @@ def loadTolerance():
     f.close()
     print "STOP Tolerance:", STOP_TOLERANCE
 
-def turn_acw(deg):
+def turn_cw(deg):
     BrickPiUpdateValues()
     dist_to_rotate = ROT_CIRCLE_CIRCUM*(deg/360.0)
     if deg>0: print "Turning left"
@@ -226,13 +226,13 @@ def go40():
 
 def square(distance):
     go(distance)
-    turn_acw(90)
+    turn_cw(90)
     go(distance)
-    turn_acw(90)
+    turn_cw(90)
     go(distance)
-    turn_acw(90)
+    turn_cw(90)
     go(distance)
-    turn_acw(90)
+    turn_cw(90)
 
 def square40():
     loadTolerance()

@@ -1,19 +1,14 @@
 from BrickPi import *   #import BrickPi.py file to use BrickPi operations
-from  week1 import *
+from week1 import *
 
 def bumperRun():
     BrickPiSetup()  # setup the serial port for communication
-
     BrickPi.SensorType[PORT_3] = TYPE_SENSOR_TOUCH   #Set the type of sensor at PORT_3
     BrickPi.SensorType[PORT_4] = TYPE_SENSOR_TOUCH   #Set the type of sensor at PORT_4
-
     BrickPiSetupSensors()   #Send the properties of sensors to BrickPi
-
     startMotor(-25)
-
     bumperL =  BrickPi.Sensor[PORT_3]
     bumperR =  BrickPi.Sensor[PORT_4]
-
     while True:
         result = BrickPiUpdateValues()  # Ask BrickPi to update values for sensors
         if not result :
@@ -23,14 +18,14 @@ def bumperRun():
             if bumperL and bumperR:
                 avoid(180)
             elif bumperL:
-                avoid(-90)
-            elif bumperR:
                 avoid(90)
+            elif bumperR:
+                avoid(-90)
         time.sleep(.01)     # sleep for 10 ms
 
-def avoid(deg):
+def avoid(deg=180):
     startMotor(12)
-    turn_acw(deg)
+    turn_cw(deg)
     startMotor(-25)
 
 def sonicStick():
@@ -48,7 +43,7 @@ def sonicStick():
         if not result :
             dist = BrickPi.Sensor[PORT_1]
             print dist
-            startMotor(1*(20-dist))
+            startMotor(0.5*(30-dist))
         time.sleep(.01)     # sleep for 10 ms
 
 def wallStick():
