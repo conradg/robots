@@ -1,5 +1,5 @@
 from BrickPi import *   #import BrickPi.py file to use BrickPi operations
-import week1
+from  week1 import *
 
 def bumperRun():
     BrickPiSetup()  # setup the serial port for communication
@@ -9,7 +9,7 @@ def bumperRun():
 
     BrickPiSetupSensors()   #Send the properties of sensors to BrickPi
 
-    week1.startMotor(-25)
+    startMotor(-25)
 
     bumperL =  BrickPi.Sensor[PORT_3]
     bumperR =  BrickPi.Sensor[PORT_4]
@@ -29,9 +29,9 @@ def bumperRun():
         time.sleep(.01)     # sleep for 10 ms
 
 def avoid(deg):
-    week1.startMotor(12)
-    week1.turn_acw(deg)
-    week1.startMotor(-25)
+    startMotor(12)
+    turn_acw(deg)
+    startMotor(-25)
 
 def sonicStick():
 
@@ -41,14 +41,14 @@ def sonicStick():
 
     BrickPiSetupSensors()   #Send the properties of sensors to BrickPi
 
-    week1.startMotor(-25)
+    startMotor(-25)
 
     while True:
         result = BrickPiUpdateValues()  # Ask BrickPi to update values for sensors/motors
         if not result :
             dist = BrickPi.Sensor[PORT_1]
             print dist
-            week1.startMotor(1*(20-dist))
+            startMotor(1*(20-dist))
         time.sleep(.01)     # sleep for 10 ms
 
 def wallStick():
@@ -59,7 +59,7 @@ def wallStick():
 
     BrickPiSetupSensors()   #Send the properties of sensors to BrickPi
 
-    week1.startMotor(-40)
+    startMotor(-40)
 
     while True:
         result = BrickPiUpdateValues()  # Ask BrickPi to update values for sensors/motors
@@ -67,10 +67,10 @@ def wallStick():
             dist = BrickPi.Sensor[PORT_1]
             print dist
             wheelDiff = 1.5*(30-dist)
-            speedL = week1.getMotorSpeed(week1.LEFT)
-            speedR = week1.getMotorSpeed(week1.RIGHT)
-            week1.setMotorSpeed(-40 + wheelDiff, week1.LEFT)
-            week1.setMotorSpeed(-40 - wheelDiff, week1.RIGHT)
+            speedL = getMotorSpeed(LEFT)
+            speedR = getMotorSpeed(RIGHT)
+            setMotorSpeed(-40 + wheelDiff, LEFT)
+            setMotorSpeed(-40 - wheelDiff, RIGHT)
             print speedL, speedR, wheelDiff
         time.sleep(.1)     # sleep for 10 ms
 
