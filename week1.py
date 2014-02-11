@@ -6,18 +6,19 @@ import math
 #############################
 
 SPEED_TO_MOTO_MAGIC_NUMBER = 60 #voltage?
+SLIPPING_MAGIC_NUMBER = 1.9
 FLIP_MOTORS = -1
-WHEEL_SPACING = 14
-WHEEL_DIAMETER  = 3
+WHEEL_SPACING = 13.8
+WHEEL_DIAMETER  = 3.2
 WHEEL_CIRC = WHEEL_DIAMETER*math.pi
 ROT_CIRCLE_CIRCUM = WHEEL_SPACING*math.pi
 ROT_CIRCLE_ENC = ROT_CIRCLE_CIRCUM/WHEEL_CIRC*720*1
 LEFT = PORT_B
 RIGHT = PORT_A
-DEFAULT_SPEED = 3
+DEFAULT_SPEED = 0.7
 PATH_THRESHHOLD = 2  #determines how far the bot can stray from it's path before it's corrected
 ROTATION_TIME = 10 # seconds per rotation
-ROTATION_SPEED = 4#ROT_CIRCLE_CIRCUM/ROTATION_TIME
+ROTATION_SPEED = DEFAULT_SPEED #ROT_CIRCLE_CIRCUM/ROTATION_TIME
 STOP_TOLERANCE = 0
 ############################
 ############################
@@ -75,6 +76,7 @@ def loadTolerance():
     print "STOP Tolerance:", STOP_TOLERANCE
 
 def turn_cw(deg):
+    deg = deg*SLIPPING_MAGIC_NUMBER
     BrickPiUpdateValues()
     dist_to_rotate = ROT_CIRCLE_CIRCUM*(deg/360.0)
     if deg>0: print "Turning left"
