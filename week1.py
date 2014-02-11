@@ -7,7 +7,7 @@ import math
 
 SPEED_TO_MOTO_MAGIC_NUMBER = 60 #voltage?
 FLIP_MOTORS = -1
-WHEEL_SPACING = 15.2
+WHEEL_SPACING = 14
 WHEEL_DIAMETER  = 3
 WHEEL_CIRC = WHEEL_DIAMETER*math.pi
 ROT_CIRCLE_CIRCUM = WHEEL_SPACING*math.pi
@@ -86,10 +86,10 @@ def turn_cw(deg):
 
 
 def stopMotor():
-    startMotor(0)
+    setMotorSpeeds(0)
     time.sleep(1)
 
-def startMotor(speed):
+def setMotorSpeeds(speed):
     setMotorSpeed(speed, LEFT)
     setMotorSpeed(speed, RIGHT)
 

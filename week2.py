@@ -7,7 +7,7 @@ def bumperRun():
     BrickPi.SensorType[PORT_3] = TYPE_SENSOR_TOUCH   #Set the type of sensor at PORT_3
     BrickPi.SensorType[PORT_4] = TYPE_SENSOR_TOUCH   #Set the type of sensor at PORT_4
     BrickPiSetupSensors()   #Send the properties of sensors to BrickPi
-    startMotor(-DEFAULT_SPEED)
+    setMotorSpeeds(DEFAULT_SPEED)
     bumperL =  BrickPi.Sensor[PORT_3]
     bumperR =  BrickPi.Sensor[PORT_4]
     while True:
@@ -22,6 +22,7 @@ def bumperRun():
                 avoid(-90)
             elif bumperR:
                 avoid(90)
+        setMotorSpeeds(DEFAULT_SPEED)
         time.sleep(.1)     # sleep for 10 ms
 
 def avoid(deg):
@@ -43,7 +44,7 @@ def avoid(deg):
     else:
         while(BrickPi.Encoder[RIGHT] < startEncsR - dist):
             BrickPiUpdateValues()
-    startMotor(-DEFAULT_SPEED)
+    
 
 def sonicStick():
 
@@ -53,14 +54,14 @@ def sonicStick():
 
     BrickPiSetupSensors()   #Send the properties of sensors to BrickPi
 
-    startMotor(DEFAULT_SPEED)
+    setMotorSpeeds(DEFAULT_SPEED)
 
     while True:
         result = BrickPiUpdateValues()  # Ask BrickPi to update values for sensors/motors
         if not result :
             dist = BrickPi.Sensor[PORT_1]
             print dist, getMotorSpeed(LEFT), getMotorSpeed(RIGHT)
-            startMotor(0.5*(30-dist))
+            setMotorSpeeds(0.5*(30-dist))
         time.sleep(.01)     # sleep for 10 ms
 
 def wallStick():
@@ -72,7 +73,7 @@ def wallStick():
     BrickPiSetupSensors()   #Send the properties of sensors to BrickPi
 
     speed = DEFAULT_SPEED
-    startMotor(speed)
+    setMotorSpeeds(speed)
 
     while True:
         result = BrickPiUpdateValues()  # Ask BrickPi to update values for sensors/motors
