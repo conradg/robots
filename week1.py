@@ -6,14 +6,15 @@ import math
 #############################
 
 SPEED_TO_MOTO_MAGIC_NUMBER = 60 #voltage?
+FLIP_MOTORS = -1
 WHEEL_SPACING = 15.2
-WHEEL_DIAMETER  = 5.6
+WHEEL_DIAMETER  = 3
 WHEEL_CIRC = WHEEL_DIAMETER*math.pi
 ROT_CIRCLE_CIRCUM = WHEEL_SPACING*math.pi
 ROT_CIRCLE_ENC = ROT_CIRCLE_CIRCUM/WHEEL_CIRC*720*1
 LEFT = PORT_B
 RIGHT = PORT_A
-DEFAULT_SPEED = 5
+DEFAULT_SPEED = 3
 PATH_THRESHHOLD = 2  #determines how far the bot can stray from it's path before it's corrected
 ROTATION_TIME = 10 # seconds per rotation
 ROTATION_SPEED = 4#ROT_CIRCLE_CIRCUM/ROTATION_TIME
@@ -81,33 +82,6 @@ def turn_cw(deg):
 
     straight_drive_loop(dist_to_rotate, True)
 
-    #speed = ROTATION_SPEED
-    #setMotorSpeed(-speed,LEFT)
-    #setMotorSpeed(speed,RIGHT)
-    #encL = BrickPi.Encoder[LEFT]
-    #encR = BrickPi.Encoder[RIGHT]
-    #print "dist to rotate"
-    #print dist_to_rotate
-    #targetEncL = encL - dist_to_enc(dist_to_rotate)
-    #targetEncR = encR + dist_to_enc(dist_to_rotate)
-    #increasing = targetEncL>encL
-    #print "encL"
-    #print encL
-    #print "Target enc", targetEncL
-    #while(True):
-    #	BrickPiUpdateValues()
-
-    #    encL = BrickPi.Encoder[LEFT]
-    #    encR = BrickPi.Encoder[RIGHT]
-
-        # break conditions
-    #    if increasing and encL >= targetEncL - STOP_TOLERANCE: break
-    #    if not increasing and encL <= targetEncL + STOP_TOLERANCE: break
-    #    time.sleep(0.01)
-    #print "encL"
-    #print encL
-    #print "stop tol"
-    #print STOP_TOLERANCE
     stopMotor()
 
 
@@ -123,12 +97,17 @@ def getMotorSpeed(port):
     return BrickPi.MotorSpeed[port]/SPEED_TO_MOTO_MAGIC_NUMBER
 
 def straight_drive_loop(dist, turn = False):
+    dist*=FLIP_MOTORS
+
     if turn: leftFlip = -1
     else: leftFlip = 1
     driftMode = 0
 
+
     if dist > 0 : forwardFlip = 1
     else : forwardFlip = -1
+
+    distEncs = dist_to_enc(dist)
 
     BrickPiUpdateValues()
     encStartL = BrickPi.Encoder[LEFT]
@@ -136,8 +115,8 @@ def straight_drive_loop(dist, turn = False):
     encL = encStartL #0
     encR = encStartR #0
     targetSpeed = ROTATION_SPEED * forwardFlip # change this
-    encLTarget = encStartL + leftFlip * (dist_to_enc(dist)-STOP_TOLERANCE*forwardFlip)
-    encRTarget = encStartR + (dist_to_enc(dist)-STOP_TOLERANCE*forwardFlip)
+    encLTarget = encStartL + leftFlip * (distEncs-STOP_TOLERANCE*forwardFlip)
+    encRTarget = encStartR +            (distEncs-STOP_TOLERANCE*forwardFlip)
     increasing = encLTarget>encL #May not work on small enc values
     power_mult_orig = 1.1
     power_mult_cap = 1.5
