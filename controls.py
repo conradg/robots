@@ -1,41 +1,43 @@
-import Tkinter
+import curses
 import week1
 
+stdscr = curses.initscr()
+curses.noecho()
+curses.cbreak()
+stdscr.keypad(1)
 
-class Application(Tkinter.Frame):
-    def __init__(self, master):
-        Tkinter.Frame.__init__(self, master)
-        self.master.config()
 
-        self.master.bind("<Left>", self.turnLeft)
-        self.master.bind("<Right>", self.turnRight)
-        self.master.bind("<Up>", self.goForwards)
-        self.master.bind("<Down>", self.goBackwards)
+def turnLeft():
+    print "turning left"
+    week1.turn_cw(-1)
 
-        self.main_frame = Tkinter.Frame()
-        self.main_frame.pack(fill="both", expand=True)
-        self.pack()
 
-    @staticmethod
-    def turnLeft(event):
-        print "turning left"
-        week1.turn_cw(-1)
+def turnRight():
+    print "turning right"
+    week1.turn_cw(1)
 
-    @staticmethod
-    def turnRight(event):
-        print "turning right"
-        week1.turn_cw(1)
 
-    @staticmethod
-    def goForwards(event):
-        print "going forwards"
-        week1.go(1)
+def goForwards():
+    print "going forwards"
+    week1.go(1)
 
-    @staticmethod
-    def goBackwards(event):
-        print "going backwards"
-        week1.go(-1)
 
-root = Tkinter.Tk()
-app = Application(root)
-app.mainloop()
+def goBackwards():
+    print "going backwards"
+    week1.go(-1)
+
+
+while 1:
+    c = stdscr.getch()
+    if c == curses.KEY_UP:
+        goForwards()
+    elif c == curses.KEY_DOWN:
+        goBackwards()
+    elif c == curses.KEY_LEFT:
+        turnLeft()
+    elif c == curses.KEY_RIGHT:
+        turnRight()
+    elif c == curses.KEY_BACKSPACE:
+        break
+    else:
+        print "waiting"
