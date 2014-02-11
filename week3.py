@@ -4,10 +4,14 @@ import time
 import sys
 import random
 
-mu = 5 # mean
-sigma = 3 #standard dev
+mu = 0 # mean (no error)
+sigma = 15 #standard dev (possible error)
 
-def getRandomError()
+x = 0
+y = 0
+theta = 0
+
+def getRandomError():
     return random.gauss(mu, sigma)
 
 numberOfParticles = 100
@@ -22,10 +26,30 @@ print "drawLine:" + str(side2)
 print "drawLine:" + str(side1)
 print "drawLine:" + str(side2)
 
+i = 0
+
 while True:
+	turning = false
+	i += 1
+	if i = 100: 
+		turning = true
+	if i = 150:
+		turning = false
+	
+	if turning:
+		thetaChange = 90 #getThetaChange();
+		x = x;
+		y = y;
+		theta = theta + thetaChange + getRandomError();
+	else:	xChange = 10 #getXChange();
+		yChange = 10 #getYChange();
+		x = x + (xChange + getRandomError()) * cos(theta);
+		y = y + (xchange + getRandomError()) * sin(theta);
+		theta = theta + getRandomError();
+
+
 	# Create a list of particles to draw. This list should be filled by tuples (x, y, theta).
-	particles = [(getRandomX(), getRandomY(), getRandomTheta()) for i in range(numberOfParticles)]
+	particles = [(x, y, theta) for i in range(numberOfParticles)]
 	print "drawParticles:" + str(particles)
 
-	c += 1;
 	time.sleep(0.05)
