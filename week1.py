@@ -219,8 +219,3 @@ def square40():
 
 
 
-loadTolerance()
-
-#calibrateTolerance()
-#go40()
-#square40()
