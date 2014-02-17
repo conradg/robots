@@ -15,6 +15,8 @@ def getRandomError():
     return random.gauss(mu, sigma)
 
 def pointCloud():
+    global x
+    global y
     numberOfParticles = 100
 
     side1 = (40, 40, 440, 40) # (x0, y0, x1, y1)

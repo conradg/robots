@@ -1,3 +1,6 @@
 #!/bin/bash
 
-scp $1 pi@robots.mine.nu:~/prac-files
+for ARG in "$@"
+do
+    scp $ARG pi@robots.mine.nu:~/prac-files
+done
