@@ -1,7 +1,7 @@
 from BrickPi import *
 import math
-import time
-import random
+from week3 import *
+
 #############################
 #########Constants###########
 #############################
@@ -23,19 +23,8 @@ ROTATION_SPEED = DEFAULT_SPEED #ROT_CIRCLE_CIRCUM/ROTATION_TIME
 STOP_TOLERANCE = 0
 ############################
 ############################
-pointcloud = []
-mu = 0 # mean (no error)
-sigmaDist = 0.5 #standard dev (possible error) for distance
-sigmaAngle = 0.005 #standard dev (possible error) for angle on forward movement
-sigmaTurn = math.pi/36 #standard dev (possible error) for angle on turn
-
-DISPLAY_SQUARE_MARGIN = 100
-DISPLAY_SQUARE_SIDE   = 500
-PHYSICAL_SQUARE_SIDE  = 40
-
-x = 0
-y = 0
-theta = 0
+NUMBER_OF_PARTICLES = 100
+pointcloud = [(DISPLAY_SQUARE_MARGIN,DISPLAY_SQUARE_MARGIN+DISPLAY_SQUARE_SIDE,0) for j in range(NUMBER_OF_PARTICLES)]
 
 BrickPiSetup()
 
@@ -101,6 +90,7 @@ def turn_cw(deg):
     stopMotor()
 
 
+
 def stopMotor():
     setMotorSpeeds(0)
     time.sleep(1)
@@ -139,9 +129,6 @@ def straight_drive_loop(dist, turn = False):
     power_mult_orig = 1.1
     power_mult_cap = 1.5
     power_mult = power_mult_orig
-
-
-
 
     while True:
         # get distance travelled
@@ -210,7 +197,7 @@ def encs_to_dist(encs):
     return WHEEL_CIRC * encs / 720
 
 def encs_to_angle(encs):
-    return 2*math.pi * (encs_to_dist(envs)/ROT_CIRCLE_CIRCUM)
+    return 2*math.pi * (encs_to_dist(encs)/ROT_CIRCLE_CIRCUM)
 
 def rotateWheel(wheel,deg):
     BrickPiUpdateValues()
@@ -245,7 +232,6 @@ def square(distance = 40):
 
     PHYSICAL_SQUARE_SIDE = distance
 
-    numberOfParticles = 100
     dsm = DISPLAY_SQUARE_MARGIN
     dss = DISPLAY_SQUARE_SIDE
     side1 = (dsm, dsm, dss+dsm, dsm)
@@ -257,52 +243,23 @@ def square(distance = 40):
     print "drawLine:" + str(side2)
     print "drawLine:" + str(side3)
     print "drawLine:" + str(side4)
+    print "PC ", pointcloud
 
-    pointcloud = [(dsm,dss+dsm,0) for j in range(numberOfParticles)]
-
-    print pointcloud
     go(distance)
-    turn_cw(90)
+    turn_cw(-90)
     go(distance)
-    turn_cw(90)
+    turn_cw(-90)
     go(distance)
-    turn_cw(90)
+    turn_cw(-90)
     go(distance)
-    turn_cw(90)
+    turn_cw(-90)
 
 def square40():
     square(40)
 
-
-def getRandomErrorDist():
-    return random.gauss(mu, sigmaDist)
-
-def getRandomErrorAngle():
-    return random.gauss(mu, sigmaAngle)
-
-def getRandomErrorTurn():
-    return random.gauss(mu, sigmaTurn)
-
-def recalculatePointCloud(particles, d, dtheta):
-    out = []
-    d = DISPLAY_SQUARE_SIDE * d / PHYSICAL_SQUARE_SIDE
-    for particle in particles:
-        x, y , theta = particle
-        if dtheta :
-            theta = theta + dtheta + getRandomErrorTurn()
-        else:
-            x = x + (d + getRandomErrorDist()) * math.cos(theta)
-            y = y - (d - getRandomErrorDist()) * math.sin(theta)
-            theta = theta + getRandomErrorAngle()
-        out.append((x,y,theta))
-    return out
-
-def drawNewPointCloud(pc, d, dtheta):
-    pc = recalculatePointCloud(pc, d, dtheta)
-    print "drawParticles:"  + str(pc)
-    time.sleep(0.1)
-    return pc
-
+x = 0
+y = 0
+theta = 0
 
 def goTo (xnew,ynew):
     global x
@@ -327,4 +284,4 @@ def goTo (xnew,ynew):
 
     theta = angle
 
-go(40)
+square(40)

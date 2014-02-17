@@ -1,6 +1,6 @@
-from movement import *
 import time
 import random
+import math
 
 mu = 0 # mean (no error)
 sigmaDist = 0.5 #standard dev (possible error) for distance
@@ -26,49 +26,26 @@ def getRandomErrorTurn():
 
 def recalculatePointCloud(particles, d, dtheta):
     out = []
-    d = DISPLAY_SQUARE_SIDE * d / PHYSICAL_SQUARE_SIDE
+    accd = (DISPLAY_SQUARE_SIDE * d) / PHYSICAL_SQUARE_SIDE
     for particle in particles:
         x, y , theta = particle
         if dtheta :
             theta = theta + dtheta + getRandomErrorTurn()
         else:
-            x = x + (d + getRandomErrorDist()) * math.cos(theta)
-            y = y - (d - getRandomErrorDist()) * math.sin(theta)
+            x = x + (accd + getRandomErrorDist()) * math.cos(theta)
+            y = y - (accd - getRandomErrorDist()) * math.sin(theta)
             theta = theta + getRandomErrorAngle()
         out.append((x,y,theta))
     return out
 
-def drawNewPointCloud(pointcloud, d, dtheta):
-    pointcloud = recalculatePointCloud(pointcloud, d, dtheta)
-    print "drawParticles:"  + str(pointcloud)
+def drawNewPointCloud(particles, d, dtheta):
+    particles = recalculatePointCloud(particles, d, dtheta)
+    print "drawParticles:"  + str(particles)
+    print "Particles:"  + str(particles)
     time.sleep(0.1)
-    return pointcloud
+    return particles
 
 
-def goTo (xnew,ynew):
-    global x
-    global y
-    global theta
-    xdiff = xnew - x
-    ydiff = ynew - y
-    angle  = math.atan2(ydiff,xdiff) * (180/math.pi)
-    anglediff = angle - theta
-
-    while anglediff > 180: anglediff -=360
-    while anglediff < -180: anglediff +=360
-
-    distance  = math.sqrt(xdiff**2 + ydiff**2) * 100 # *100 to convert to cm
-    turn_cw(-anglediff)
-    go(distance)
-    x = xnew
-    y = ynew
-
-    while angle > 180: angle -= 360
-    while angle < -180: angle += 360
-
-    theta = angle
-
-go(40)
 #goTo(.3,.3)
 #goTo(0,0)
 
