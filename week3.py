@@ -13,15 +13,15 @@ def getRandomError():
     return random.gauss(mu, sigma)
 
 def pointCloud():
-    global x
-    global y
-    global theta
+    x = 40
+    y = 440
+    theta = 90
     numberOfParticles = 10
 
-    side1 = (40, 40, 440, 40) # (x0, y0, x1, y1)
+    side1 = (40, 40, 440, 40)    # (x0, y0, x1, y1)
     side2 = (440, 40, 440, 440)  # (x0, y0, x1, y1)
-    side3 = (440, 440, 40, 440) # (x0, y0, x1, y1)
-    side4 = (40, 440, 40, 40)  # (x0, y0, x1, y1)
+    side3 = (440, 440, 40, 440)  # (x0, y0, x1, y1)
+    side4 = (40, 440, 40, 40)    # (x0, y0, x1, y1)
 
     print "drawLine:" + str(side1)
     print "drawLine:" + str(side2)
@@ -29,8 +29,8 @@ def pointCloud():
     print "drawLine:" + str(side4)
 
     i = 0
-
-    for x in range(40):
+    particles = [(x,y,theta) for particle in range(numberOfParticles)]
+    for particle in range(numberOfParticles):
         turning = False
         i += 100
         if i == 100:
@@ -38,7 +38,7 @@ def pointCloud():
         if i == 200:
             turning = False
 
-        if turning :
+        if turning:
             thetaChange = 90
             x = x
             y = y
@@ -49,12 +49,9 @@ def pointCloud():
             x = x + (xChange + getRandomError()) * math.cos(theta)
             y = y + (yChange + getRandomError()) * math.sin(theta)
             theta = theta + getRandomError()
-
         # Create a list of particles to draw. This list should be filled by tuples (x, y, theta).
-        particles = [(x, y, theta) for i in range(numberOfParticles)]
-        print "drawParticles:" , particles
-
-        time.sleep(0.01)
+    print "drawParticles:" , particles
+    time.sleep(0.1)
 
 
 def goTo (xnew,ynew):
