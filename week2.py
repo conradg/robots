@@ -1,5 +1,4 @@
-from BrickPi import *   #import BrickPi.py file to use BrickPi operations
-from week1 import *
+from movement import *
 import sys
 
 def bumperRun():

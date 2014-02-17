@@ -217,5 +217,3 @@ def square(distance):
 def square40():
     square(40)
 
-
-
