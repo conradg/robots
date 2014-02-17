@@ -50,7 +50,7 @@ while True:
 
     # Create a list of particles to draw. This list should be filled by tuples (x, y, theta).
     particles = [(x, y, theta) for i in range(numberOfParticles)]
-    print "drawParticles:" + str(particles)
+    print "drawParticles:" + particles
 
     time.sleep(0.01)
 
