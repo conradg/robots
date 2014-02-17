@@ -17,6 +17,7 @@ def getRandomError():
 def pointCloud():
     global x
     global y
+    global theta
     numberOfParticles = 100
 
     side1 = (40, 40, 440, 40) # (x0, y0, x1, y1)
