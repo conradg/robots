@@ -110,6 +110,7 @@ def straight_drive_loop(dist, turn = False):
     if dist > 0 : forwardFlip = 1
     else : forwardFlip = -1
 
+
     distEncs = dist_to_enc(dist)
 
     BrickPiUpdateValues()
@@ -125,9 +126,34 @@ def straight_drive_loop(dist, turn = False):
     power_mult_cap = 1.5
     power_mult = power_mult_orig
 
+    numberOfParticles = 100
+
+    dsm = DISPLAY_SQUARE_MARGIN
+    dss = DISPLAY_SQUARE_SIDE
+    side1 = (dsm, dsm, dss+dsm, dsm)
+    side2 = (dss+dsm, dsm, dss+dsm, dss+dsm)
+    side3 = (dss+dsm, dss+dsm, dsm, dss+dsm)
+    side4 = (dsm, dss+dsm, dsm, dsm)
+
+    print "drawLine:" + str(side1)
+    print "drawLine:" + str(side2)
+    print "drawLine:" + str(side3)
+    print "drawLine:" + str(side4)
+
+    pointcloud = [(dsm,dss+dsm,0) for j in range(numberOfParticles)]
+
+
+
     while True:
         # get distance travelled
         BrickPiUpdateValues()
+        encsTravelledL = BrickPi.Encoder[LEFT]
+        encsTravelledR = BrickPi.Encoder[RIGHT]
+
+        if not turn:
+            d = (encsTravelledL + encsTravelled)/2
+            pointcloud = drawNewPointCloud(pointcloud, d, 0)
+
         encL = BrickPi.Encoder[LEFT]
         encR = BrickPi.Encoder[RIGHT]
 
@@ -156,8 +182,11 @@ def straight_drive_loop(dist, turn = False):
             setMotorSpeed(targetSpeed, RIGHT)
             power_mult = power_mult_orig
 
+
+
         # break conditions
         if increasing and encL >= encLTarget:
+            B
             break
         if not increasing and encL <= encLTarget:
             break
@@ -167,8 +196,11 @@ def straight_drive_loop(dist, turn = False):
     BrickPiUpdateValues()
     encL = BrickPi.Encoder[LEFT] - encStartL
     encR = BrickPi.Encoder[RIGHT] - encStartR
-    print encL, encR
+    angle = encs_to_angle((encR - encL)/2)
+    if (turn):
+        pointcloud = recalculatePointCloud(pointcloud, 0, angle)
 
+    print encL, encR
 
 def go(distance):
     straight_drive_loop(distance)

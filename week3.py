@@ -39,7 +39,6 @@ def recalculatePointCloud(particles, d, dtheta):
 def drawNewPointCloud(pointcloud, d, dtheta)
         pointcloud = recalculatePointCloud(pointcloud, d, dtheta)
         print "drawParticles:"  + str(pointcloud)
-        time.sleep(0.1)
         return pointcloud
 
 
