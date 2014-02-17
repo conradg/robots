@@ -67,15 +67,21 @@ def goTo (xnew,ynew):
     ydiff = ynew - y
     angle  = math.atan2(ydiff,xdiff) * (180/math.pi)
     anglediff = angle - theta
+
+    while anglediff > 180: anglediff -=360
+    while anglediff < -180: anglediff +=360
+
     print "angle:" ,  angle
     distance  = math.sqrt(xdiff**2 + ydiff**2) * 100 # *100 to convert to cm
     turn_cw(-anglediff)
     go(distance)
     x = xnew
     y = ynew
+
+    while angle > 180: angle -= 360
+    while angle < -180: angle += 360
+
     theta = angle
 
 #pointCloud()
-goTo(.3,.3)
-goTo(0,0)
 
