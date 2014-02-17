@@ -1,7 +1,5 @@
-from week1 import *
-from week2 import *
+from movement import *
 import time
-import sys
 import random
 
 mu = 0 # mean (no error)
@@ -18,7 +16,7 @@ def pointCloud():
     global x
     global y
     global theta
-    numberOfParticles = 100
+    numberOfParticles = 10
 
     side1 = (40, 40, 440, 40) # (x0, y0, x1, y1)
     side2 = (440, 40, 440, 440)  # (x0, y0, x1, y1)
@@ -32,9 +30,9 @@ def pointCloud():
 
     i = 0
 
-    while True:
+    for x in range(40):
         turning = False
-        i += 1
+        i += 100
         if i == 100:
             turning = True
         if i == 200:
@@ -54,7 +52,7 @@ def pointCloud():
 
         # Create a list of particles to draw. This list should be filled by tuples (x, y, theta).
         particles = [(x, y, theta) for i in range(numberOfParticles)]
-        print "drawParticles:" + str(particles)
+        print "drawParticles:" , particles
 
         time.sleep(0.01)
 
