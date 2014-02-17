@@ -25,10 +25,10 @@ def pointCloud():
     side3 = (440, 440, 40, 440) # (x0, y0, x1, y1)
     side4 = (40, 440, 40, 40)  # (x0, y0, x1, y1)
 
-    print "drawLine:" , str(side1)
-    print "drawLine:" , str(side2)
-    print "drawLine:" , str(side3)
-    print "drawLine:" , str(side4)
+    print "drawLine:" + str(side1)
+    print "drawLine:" + str(side2)
+    print "drawLine:" + str(side3)
+    print "drawLine:" + str(side4)
 
     i = 0
 
@@ -54,7 +54,7 @@ def pointCloud():
 
         # Create a list of particles to draw. This list should be filled by tuples (x, y, theta).
         particles = [(x, y, theta) for i in range(numberOfParticles)]
-        print "drawParticles:" , particles
+        print "drawParticles:" + str(particles)
 
         time.sleep(0.01)
 
@@ -75,7 +75,7 @@ def goTo (xnew,ynew):
     y = ynew
     theta = angle
 
-#pointCloud()
-goTo(.3,.3)
-goTo(0,0)
+pointCloud()
+#goTo(.3,.3)
+#goTo(0,0)
 

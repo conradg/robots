@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 if [ $# != 0 ]
 then 
     scp $@ pi@robots.mine.nu:~/prac-files
