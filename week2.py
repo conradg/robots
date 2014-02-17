@@ -87,13 +87,4 @@ def wallStick():
             setMotorSpeed(speed + wheelDiff, RIGHT)
             print speedL, speedR, wheelDiff
         time.sleep(0.001)     # sleep for 10 ms
-if len(sys.argv) > 1 :
-    if sys.argv[1] == "task1":
-        bumperRun()
-    elif sys.argv[1] == "task2":
-        sonicStick()
-    elif sys.argv[1] == "task3":
-        wallStick()
-    else:
-        go(1000)
 
