@@ -7,7 +7,7 @@ sigmaDist = 0.5 #standard dev (possible error) for distance
 sigmaAngle = 0.005 #standard dev (possible error) for angle on forward movement
 sigmaTurn = math.pi/36 #standard dev (possible error) for angle on turn
 
-DISPLAY_SQUARE_MARGIN = 50
+DISPLAY_SQUARE_MARGIN = 100
 DISPLAY_SQUARE_SIDE = 500
 
 x = 0
@@ -36,39 +36,11 @@ def recalculatePointCloud(particles, d, dtheta):
         out.append((x,y,theta))
     return out
 
-def drawNewPointCloud(pointcloud, d, dtheta)
-        pointcloud = recalculatePointCloud(pointcloud, d, dtheta)
-        print "drawParticles:"  + str(pointcloud)
-        time.sleep(0.1)
-        return pointcloud
-
-
-def pointCloud(x,y,theta):
-    numberOfParticles = 100
-
-    dsm = DISPLAY_SQUARE_MARGIN
-    dss = DISPLAY_SQUARE_SIDE
-    side1 = (dsm, dsm, dss+dsm, dsm)
-    side2 = (dss+dsm, dsm, dss+dsm, dss+dsm)
-    side3 = (dss+dsm, dss+dsm, dsm, dss+dsm)
-    side4 = (dsm, dss+dsm, dsm, dsm)
-
-    print "drawLine:" + str(side1)
-    print "drawLine:" + str(side2)
-    print "drawLine:" + str(side3)
-    print "drawLine:" + str(side4)
-
-    pointcloud = [(dsm,dss+dsm,0) for j in range(numberOfParticles)]
-    print "drawParticles:" + str(pointcloud)
-    for i in range(100):
-        pointcloud = drawNewPointCloud(pointcloud,5,0)
-        time.sleep(0.1)
-    pointcloud = recalculatePointCloud(pointcloud,0,math.pi/2)
+def drawNewPointCloud(pointcloud, d, dtheta):
+    pointcloud = recalculatePointCloud(pointcloud, d, dtheta)
+    print "drawParticles:"  + str(pointcloud)
     time.sleep(0.1)
-    for i in range(100):
-        pointcloud = recalculatePointCloud(pointcloud,5,0)
-        print "drawParticles:" + str(pointcloud)
-        time.sleep(0.1)
+    return pointcloud
 
 
 def goTo (xnew,ynew):
@@ -94,7 +66,6 @@ def goTo (xnew,ynew):
 
     theta = angle
 
-pointCloud(0,0,0)
 #goTo(.3,.3)
 #goTo(0,0)
 
