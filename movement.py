@@ -5,7 +5,7 @@ import math
 #########Constants###########
 #############################
 
-SPEED_TO_MOTO_MAGIC_NUMBER = 60 #voltage?
+SPEED_TO_MOTO_MAGIC_NUMBER = 100 #voltage?
 SLIPPING_MAGIC_NUMBER = 1.08
 FLIP_MOTORS = 1
 WHEEL_SPACING = 13.5
