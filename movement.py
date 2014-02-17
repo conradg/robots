@@ -257,8 +257,10 @@ def square(distance = 40):
     print "drawLine:" + str(side2)
     print "drawLine:" + str(side3)
     print "drawLine:" + str(side4)
+
     pointcloud = [(dsm,dss+dsm,0) for j in range(numberOfParticles)]
 
+    print pointcloud
     go(distance)
     turn_cw(90)
     go(distance)
@@ -295,11 +297,11 @@ def recalculatePointCloud(particles, d, dtheta):
         out.append((x,y,theta))
     return out
 
-def drawNewPointCloud(pointcloud, d, dtheta):
-    pointcloud = recalculatePointCloud(pointcloud, d, dtheta)
-    print "drawParticles:"  + str(pointcloud)
+def drawNewPointCloud(pc, d, dtheta):
+    pc = recalculatePointCloud(pc, d, dtheta)
+    print "drawParticles:"  + str(pc)
     time.sleep(0.1)
-    return pointcloud
+    return pc
 
 
 def goTo (xnew,ynew):
