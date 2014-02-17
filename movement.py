@@ -1,5 +1,6 @@
 from BrickPi import *
 import math
+from week3 import *
 
 #############################
 #########Constants###########
