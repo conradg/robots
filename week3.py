@@ -8,7 +8,8 @@ sigmaAngle = 0.005 #standard dev (possible error) for angle on forward movement
 sigmaTurn = math.pi/36 #standard dev (possible error) for angle on turn
 
 DISPLAY_SQUARE_MARGIN = 100
-DISPLAY_SQUARE_SIDE = 500
+DISPLAY_SQUARE_SIDE   = 500
+PHYSICAL_SQUARE_SIDE  = 40
 
 x = 0
 y = 0
@@ -25,6 +26,7 @@ def getRandomErrorTurn():
 
 def recalculatePointCloud(particles, d, dtheta):
     out = []
+    d = DISPLAY_SQUARE_SIDE * d / PHYSICAL_SQUARE_SIDE
     for particle in particles:
         x, y , theta = particle
         if dtheta :
@@ -66,6 +68,7 @@ def goTo (xnew,ynew):
 
     theta = angle
 
+go(40)
 #goTo(.3,.3)
 #goTo(0,0)
 
