@@ -133,8 +133,8 @@ def straight_drive_loop(dist, turn = False):
     while True:
         # get distance travelled
         BrickPiUpdateValues()
-        encsTravelledL = BrickPi.Encoder[LEFT]
-        encsTravelledR = BrickPi.Encoder[RIGHT]
+        encsTravelledL = BrickPi.Encoder[LEFT] -encL
+        encsTravelledR = BrickPi.Encoder[RIGHT] -encR
 
         if not turn:
             d = encs_to_dist((encsTravelledL + encsTravelledR)/2)
@@ -194,7 +194,7 @@ def dist_to_enc(distance):
     return 720*distance/WHEEL_CIRC
 
 def encs_to_dist(encs):
-    return WHEEL_CIRC * encs / 720
+    return WHEEL_CIRC * (encs / 720)
 
 def encs_to_angle(encs):
     return 2*math.pi * (encs_to_dist(encs)/ROT_CIRCLE_CIRCUM)
