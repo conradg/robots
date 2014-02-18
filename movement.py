@@ -6,7 +6,7 @@ from week3 import *
 #########Constants###########
 #############################
 
-SPEED_TO_MOTO_MAGIC_NUMBER = 100 #voltage?
+SPEED_TO_MOTO_MAGIC_NUMBER = 130 #voltage?
 SLIPPING_MAGIC_NUMBER =1 # 1.08
 FLIP_MOTORS = 1
 WHEEL_SPACING = 13.5
@@ -130,7 +130,7 @@ def straight_drive_loop(dist, turn = False):
     power_mult_orig = 1.1
     power_mult_cap = 1.5
     power_mult = power_mult_orig
-    min_speed = 0.4
+    min_speed = 0.75
 
     while True:
         # proportional gain
@@ -154,7 +154,7 @@ def straight_drive_loop(dist, turn = False):
         encLRel = math.fabs(encL-encStartL)
         encRRel = math.fabs(encR-encStartR)
         print targetSpeed
-        targetSpeed = min(math.fabs(distEncs - encRRel)/300 + min_speed, targetSpeedMax)
+        targetSpeed = min(math.fabs(distEncs - encRRel)/400 + min_speed, targetSpeedMax)
 
         if math.fabs(encLRel-encRRel) > PATH_THRESHHOLD : #if we get off track, increase the motorSpeed of the slower side to compensate
             if encLRel > encRRel :
