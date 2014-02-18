@@ -82,7 +82,7 @@ def turn_cw(deg):
     deg = deg*SLIPPING_MAGIC_NUMBER
     BrickPiUpdateValues()
     dist_to_rotate = ROT_CIRCLE_CIRCUM*(deg/360.0)
-    if deg>0: print "Turning left"
+    if deg<0: print "Turning left"
     else: print "Turning right"
 
     straight_drive_loop(dist_to_rotate, True)
@@ -139,8 +139,8 @@ def straight_drive_loop(dist, turn = False):
 
         # get distance travelled
         BrickPiUpdateValues()
-        encsTravelledL = BrickPi.Encoder[LEFT]
-        encsTravelledR = BrickPi.Encoder[RIGHT]
+        encsTravelledL = BrickPi.Encoder[LEFT] -  encL
+        encsTravelledR = BrickPi.Encoder[RIGHT] - encR
 
         if not turn:
             d = encs_to_dist((encsTravelledL + encsTravelledR)/2)
@@ -208,7 +208,7 @@ def dist_to_enc(distance):
     return 720*distance/WHEEL_CIRC
 
 def encs_to_dist(encs):
-    return WHEEL_CIRC * encs / 720
+    return WHEEL_CIRC * (encs / 720.0)
 
 def encs_to_angle(encs):
     return 2*math.pi * (encs_to_dist(encs)/ROT_CIRCLE_CIRCUM)
@@ -257,16 +257,15 @@ def square(distance = 40):
     print "drawLine:" + str(side2)
     print "drawLine:" + str(side3)
     print "drawLine:" + str(side4)
-    print "PC ", pointcloud
 
     go(distance)
-    turn_cw(-90)
+    turn_cw(90)
     go(distance)
-    turn_cw(-90)
+    turn_cw(90)
     go(distance)
-    turn_cw(-90)
+    turn_cw(90)
     go(distance)
-    turn_cw(-90)
+    turn_cw(90)
 
 def square40():
     square(40)
