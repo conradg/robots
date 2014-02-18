@@ -282,23 +282,18 @@ def getMeanPosition(pointcloud, pointWeights)
     return (meanX, meanY, meanTheta)
 
 def goTo (xnew,ynew):
-    #global x
-    #global y
-    #global theta
 
     (x, y, theta) = getMeanPosition(pointcloud, pointWeights)
 
     xdiff = xnew - x
     ydiff = ynew - y
-    angle  = math.atan2(ydiff,xdiff) * (180/math.pi)
+    angle  = math.atan2(ydiff,xdiff)
     anglediff = angle - theta
-    if anglediff < 0 :
-        anglediff %= -math.pi
-    else
-        anglediff %= math.pi
+    # Modulo pi retaining sign
+    anglediff %= math.pi * (-1 if anglediff < 0 else 1)
 
     distance  = math.sqrt(xdiff**2 + ydiff**2) * 100 # *100 to convert to cm
-    turn_cw(-anglediff/)
+    turn_cw(-anglediff)
     go(distance)
 
 square(40)
