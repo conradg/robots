@@ -130,7 +130,7 @@ def straight_drive_loop(dist, turn = False):
     power_mult_orig = 1.1
     power_mult_cap = 1.5
     power_mult = power_mult_orig
-    min_speed = 0.4
+    min_speed = 0.45
 
     while True:
         # get distance travelled
@@ -150,8 +150,8 @@ def straight_drive_loop(dist, turn = False):
         # adjust for drift
         encLRel = math.fabs(encL-encStartL)
         encRRel = math.fabs(encR-encStartR)
-
-        targetSpeed = min(math.fabs(distEncs - encRRel)/300 + min_speed, targetSpeedMax)
+        print targetSpeed
+        targetSpeed = min(math.fabs(distEncs - encRRel)/400 + min_speed, targetSpeedMax)
 
         if math.fabs(encLRel-encRRel) > PATH_THRESHHOLD : #if we get off track, increase the motorSpeed of the slower side to compensate
             if encLRel > encRRel :
@@ -288,5 +288,3 @@ def goTo (xnew,ynew):
     while angle < -180: angle += 360
 
     theta = angle
-
-square()

@@ -1,0 +1,7 @@
+#!/usr/bin/python
+
+import movement
+import sys
+
+print movement.encs_to_dist(float(sys.argv[1]))
+
