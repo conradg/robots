@@ -1,5 +1,5 @@
-from week3 import *
+from movement import *
 
 goTo(0.5,0.5)
-goTo(0.5,-0.5)
+goTo(0.5,-0.2)
 goTo(0,0)

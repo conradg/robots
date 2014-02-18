@@ -150,8 +150,7 @@ def straight_drive_loop(dist, turn = False):
         # adjust for drift
         encLRel = math.fabs(encL-encStartL)
         encRRel = math.fabs(encR-encStartR)
-        print targetSpeed
-        targetSpeed = min(math.fabs(distEncs - encRRel)/400 + min_speed, targetSpeedMax)
+        targetSpeed = min(math.fabs(distEncs - math.fabs(encRRel))/400 + min_speed, targetSpeedMax)
 
         if math.fabs(encLRel-encRRel) > PATH_THRESHHOLD : #if we get off track, increase the motorSpeed of the slower side to compensate
             if encLRel > encRRel :
