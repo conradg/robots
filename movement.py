@@ -6,7 +6,7 @@ from week3 import *
 #########Constants###########
 #############################
 
-SPEED_TO_MOTO_MAGIC_NUMBER = 130 #voltage?
+SPEED_TO_MOTO_MAGIC_NUMBER = 100 #voltage?
 SLIPPING_MAGIC_NUMBER =1 # 1.08
 FLIP_MOTORS = 1
 WHEEL_SPACING = 13.5
@@ -130,7 +130,7 @@ def straight_drive_loop(dist, turn = False):
     power_mult_orig = 1.1
     power_mult_cap = 1.5
     power_mult = power_mult_orig
-    min_speed = 0.75
+    min_speed = 0.45
 
     while True:
         # get distance travelled
@@ -288,5 +288,3 @@ def goTo (xnew,ynew):
     while angle < -180: angle += 360
 
     theta = angle
-
-square()
