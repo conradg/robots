@@ -23,7 +23,7 @@ ROTATION_SPEED = DEFAULT_SPEED #ROT_CIRCLE_CIRCUM/ROTATION_TIME
 STOP_TOLERANCE = 0
 ############################
 ############################
-NUMBER_OF_PARTICLES = 100
+NUMBER_OF_PARTICLES = 2
 pointcloud = [(DISPLAY_SQUARE_MARGIN,DISPLAY_SQUARE_MARGIN+DISPLAY_SQUARE_SIDE,0) for j in range(NUMBER_OF_PARTICLES)]
 
 BrickPiSetup()
@@ -82,7 +82,7 @@ def turn_cw(deg):
     deg = deg*SLIPPING_MAGIC_NUMBER
     BrickPiUpdateValues()
     dist_to_rotate = ROT_CIRCLE_CIRCUM*(deg/360.0)
-    if deg>0: print "Turning left"
+    if deg<0: print "Turning left"
     else: print "Turning right"
 
     straight_drive_loop(dist_to_rotate, True)
