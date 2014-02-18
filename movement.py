@@ -7,7 +7,9 @@ from week3 import *
 #############################
 
 SPEED_TO_MOTO_MAGIC_NUMBER = 100 #voltage?
-SLIPPING_MAGIC_NUMBER = 1.08
+CARPET_SLIP = 1.08
+TABLE_SLIP = 1
+SLIPPING_MAGIC_NUMBER = CARPET_SLIP
 FLIP_MOTORS = 1
 WHEEL_SPACING = 13.5
 WHEEL_DIAMETER  = 5.6
@@ -123,13 +125,15 @@ def straight_drive_loop(dist, turn = False):
     encStartR = BrickPi.Encoder[RIGHT]
     encL = encStartL #0
     encR = encStartR #0
-    targetSpeed = ROTATION_SPEED * forwardFlip # change this
+    targetSpeedMax = ROTATION_SPEED
+    targetSpeed = targetSpeedMax
     encLTarget = encStartL + leftFlip * (distEncs-STOP_TOLERANCE*forwardFlip)
     encRTarget = encStartR +            (distEncs-STOP_TOLERANCE*forwardFlip)
     increasing = encLTarget>encL #May not work on small enc values
     power_mult_orig = 1.1
     power_mult_cap = 1.5
     power_mult = power_mult_orig
+    min_speed = 0.45
 
     while True:
         # get distance travelled
@@ -137,16 +141,21 @@ def straight_drive_loop(dist, turn = False):
         encsTravelledL = BrickPi.Encoder[LEFT] -  encL
         encsTravelledR = BrickPi.Encoder[RIGHT] - encR
 
+        #update previous enc value
+        encL = BrickPi.Encoder[LEFT]
+        encR = BrickPi.Encoder[RIGHT]
+
         if not turn:
             d = encs_to_dist((encsTravelledL + encsTravelledR)/2)
             pointcloud = drawNewPointCloud(pointcloud, d, 0)
 
-        encL = BrickPi.Encoder[LEFT]
-        encR = BrickPi.Encoder[RIGHT]
 
         # adjust for drift
         encLRel = math.fabs(encL-encStartL)
         encRRel = math.fabs(encR-encStartR)
+        print targetSpeed
+        
+        targetSpeed = min((math.fabs(distEncs) - encRRel)/400 + min_speed, targetSpeedMax) * forwardFlip
 
         if math.fabs(encLRel-encRRel) > PATH_THRESHHOLD : #if we get off track, increase the motorSpeed of the slower side to compensate
             if encLRel > encRRel :
@@ -182,9 +191,9 @@ def straight_drive_loop(dist, turn = False):
     BrickPiUpdateValues()
     encL = BrickPi.Encoder[LEFT] - encStartL
     encR = BrickPi.Encoder[RIGHT] - encStartR
-    angle = encs_to_angle((encR - encL)/2)
+    angle = - encs_to_angle((encR - encL)/2)
     if (turn):
-        pointcloud = recalculatePointCloud(pointcloud, 0, angle)
+        pointcloud = drawNewPointCloud(pointcloud, 0, angle)
     print encL, encR
 
 def go(distance):
@@ -246,13 +255,13 @@ def square(distance = 40):
     print "drawLine:" + str(side4)
 
     go(distance)
-    turn_cw(90)
+    turn_cw(-90)
     go(distance)
-    turn_cw(90)
+    turn_cw(-90)
     go(distance)
-    turn_cw(90)
+    turn_cw(-90)
     go(distance)
-    turn_cw(90)
+    turn_cw(-90)
 
 def square40():
     square(40)
