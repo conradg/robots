@@ -6,7 +6,7 @@ from week3 import *
 #########Constants###########
 #############################
 
-SPEED_TO_MOTO_MAGIC_NUMBER = 200 #voltage?
+SPEED_TO_MOTO_MAGIC_NUMBER = 100 #voltage?
 SLIPPING_MAGIC_NUMBER =1 # 1.08
 FLIP_MOTORS = 1
 WHEEL_SPACING = 13.5
@@ -130,28 +130,31 @@ def straight_drive_loop(dist, turn = False):
     power_mult_orig = 1.1
     power_mult_cap = 1.5
     power_mult = power_mult_orig
-    min_speed = 30
+    min_speed = 0.4
 
     while True:
         # proportional gain
 
-        targetSpeed = min(math.fabs(distEncs - encR)/10 + min_speed, targetSpeedMax)
+
 
         # get distance travelled
         BrickPiUpdateValues()
         encsTravelledL = BrickPi.Encoder[LEFT] -  encL
         encsTravelledR = BrickPi.Encoder[RIGHT] - encR
 
+        encL = BrickPi.Encoder[LEFT]
+        encR = BrickPi.Encoder[RIGHT]
+
         if not turn:
             d = encs_to_dist((encsTravelledL + encsTravelledR)/2)
             pointcloud = drawNewPointCloud(pointcloud, d, 0)
 
-        encL = BrickPi.Encoder[LEFT]
-        encR = BrickPi.Encoder[RIGHT]
 
         # adjust for drift
         encLRel = math.fabs(encL-encStartL)
         encRRel = math.fabs(encR-encStartR)
+        print targetSpeed
+        targetSpeed = min(math.fabs(distEncs - encRRel)/300 + min_speed, targetSpeedMax)
 
         if math.fabs(encLRel-encRRel) > PATH_THRESHHOLD : #if we get off track, increase the motorSpeed of the slower side to compensate
             if encLRel > encRRel :
