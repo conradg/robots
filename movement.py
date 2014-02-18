@@ -23,7 +23,7 @@ ROTATION_SPEED = DEFAULT_SPEED #ROT_CIRCLE_CIRCUM/ROTATION_TIME
 STOP_TOLERANCE = 0
 ############################
 ############################
-NUMBER_OF_PARTICLES = 1
+NUMBER_OF_PARTICLES = 100
 pointcloud = [(DISPLAY_SQUARE_MARGIN,DISPLAY_SQUARE_MARGIN+DISPLAY_SQUARE_SIDE,0) for j in range(NUMBER_OF_PARTICLES)]
 
 BrickPiSetup()
@@ -133,7 +133,6 @@ def straight_drive_loop(dist, turn = False):
     min_speed = 0.4
 
     while True:
-        print "PC " + str(pointcloud)
         # get distance travelled
         BrickPiUpdateValues()
         encsTravelledL = BrickPi.Encoder[LEFT] -  encL
