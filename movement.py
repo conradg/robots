@@ -133,15 +133,12 @@ def straight_drive_loop(dist, turn = False):
     min_speed = 0.75
 
     while True:
-        # proportional gain
-
-
-
         # get distance travelled
         BrickPiUpdateValues()
         encsTravelledL = BrickPi.Encoder[LEFT] -  encL
         encsTravelledR = BrickPi.Encoder[RIGHT] - encR
 
+        #update previous enc value
         encL = BrickPi.Encoder[LEFT]
         encR = BrickPi.Encoder[RIGHT]
 
@@ -190,18 +187,10 @@ def straight_drive_loop(dist, turn = False):
     BrickPiUpdateValues()
     encL = BrickPi.Encoder[LEFT] - encStartL
     encR = BrickPi.Encoder[RIGHT] - encStartR
-    angle = encs_to_angle((encR - encL)/2)
+    angle = - encs_to_angle((encR - encL)/2)
     if (turn):
-        pointcloud = recalculatePointCloud(pointcloud, 0, angle)
+        pointcloud = drawNewPointCloud(pointcloud, 0, angle)
     print encL, encR
- #   stopMotor()
-  #  time.sleep(2)
-
-   # BrickPiUpdateValues()
-   # encL = BrickPi.Encoder[LEFT] - encStartL
-   # encR = BrickPi.Encoder[RIGHT] - encStartR
-
-    #print encL, encR
 
 def go(distance):
     straight_drive_loop(distance)
@@ -262,13 +251,13 @@ def square(distance = 40):
     print "drawLine:" + str(side4)
 
     go(distance)
-    turn_cw(90)
+    turn_cw(-90)
     go(distance)
-    turn_cw(90)
+    turn_cw(-90)
     go(distance)
-    turn_cw(90)
+    turn_cw(-90)
     go(distance)
-    turn_cw(90)
+    turn_cw(-90)
 
 def square40():
     square(40)
@@ -300,4 +289,4 @@ def goTo (xnew,ynew):
 
     theta = angle
 
-#square(40)
+square()
