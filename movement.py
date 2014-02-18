@@ -23,7 +23,7 @@ ROTATION_SPEED = DEFAULT_SPEED #ROT_CIRCLE_CIRCUM/ROTATION_TIME
 STOP_TOLERANCE = 0
 ############################
 ############################
-NUMBER_OF_PARTICLES = 100
+NUMBER_OF_PARTICLES = 1
 pointcloud = [(DISPLAY_SQUARE_MARGIN,DISPLAY_SQUARE_MARGIN+DISPLAY_SQUARE_SIDE,0) for j in range(NUMBER_OF_PARTICLES)]
 
 BrickPiSetup()
@@ -133,15 +133,13 @@ def straight_drive_loop(dist, turn = False):
     min_speed = 0.4
 
     while True:
-        # proportional gain
-
-
-
+        print "PC " + str(pointcloud)
         # get distance travelled
         BrickPiUpdateValues()
         encsTravelledL = BrickPi.Encoder[LEFT] -  encL
         encsTravelledR = BrickPi.Encoder[RIGHT] - encR
 
+        #update previous enc value
         encL = BrickPi.Encoder[LEFT]
         encR = BrickPi.Encoder[RIGHT]
 
@@ -153,7 +151,7 @@ def straight_drive_loop(dist, turn = False):
         # adjust for drift
         encLRel = math.fabs(encL-encStartL)
         encRRel = math.fabs(encR-encStartR)
-        print targetSpeed
+
         targetSpeed = min(math.fabs(distEncs - encRRel)/300 + min_speed, targetSpeedMax)
 
         if math.fabs(encLRel-encRRel) > PATH_THRESHHOLD : #if we get off track, increase the motorSpeed of the slower side to compensate
@@ -190,18 +188,10 @@ def straight_drive_loop(dist, turn = False):
     BrickPiUpdateValues()
     encL = BrickPi.Encoder[LEFT] - encStartL
     encR = BrickPi.Encoder[RIGHT] - encStartR
-    angle = encs_to_angle((encR - encL)/2)
+    angle = - encs_to_angle((encR - encL)/2)
     if (turn):
-        pointcloud = recalculatePointCloud(pointcloud, 0, angle)
+        pointcloud = drawNewPointCloud(pointcloud, 0, angle)
     print encL, encR
- #   stopMotor()
-  #  time.sleep(2)
-
-   # BrickPiUpdateValues()
-   # encL = BrickPi.Encoder[LEFT] - encStartL
-   # encR = BrickPi.Encoder[RIGHT] - encStartR
-
-    #print encL, encR
 
 def go(distance):
     straight_drive_loop(distance)
