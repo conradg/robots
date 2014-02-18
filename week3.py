@@ -11,10 +11,6 @@ DISPLAY_SQUARE_MARGIN = 100
 DISPLAY_SQUARE_SIDE   = 500
 PHYSICAL_SQUARE_SIDE  = 40
 
-x = 0
-y = 0
-theta = 0
-
 def getRandomErrorDist():
     return random.gauss(mu, sigmaDist)
 
@@ -24,27 +20,22 @@ def getRandomErrorAngle():
 def getRandomErrorTurn():
     return random.gauss(mu, sigmaTurn)
 
-def recalculatePointCloud(particles, d, dtheta):
-    out = []
-    accd = (DISPLAY_SQUARE_SIDE * d) / PHYSICAL_SQUARE_SIDE
-    for particle in particles:
-        x, y , theta = particle
+def recalculatePointCloud(particles, accd, dtheta):
+    d = (DISPLAY_SQUARE_SIDE * accd) / PHYSICAL_SQUARE_SIDE
+    for i in range(len(particles)):
+        x, y , theta = particles[i]
         if dtheta :
             theta = theta + dtheta + getRandomErrorTurn()
         else:
-            x = x + (accd + getRandomErrorDist()) * math.cos(theta)
-            y = y - (accd - getRandomErrorDist()) * math.sin(theta)
+            x = x + (d + getRandomErrorDist()) * math.cos(theta)
+            y = y - (d - getRandomErrorDist()) * math.sin(theta)
             theta = theta + getRandomErrorAngle()
-        out.append((x,y,theta))
-    return out
+        particles[i] = (x,y,theta)
+    return particles
 
 def drawNewPointCloud(particles, d, dtheta):
     particles = recalculatePointCloud(particles, d, dtheta)
     print "drawParticles:"  + str(particles)
     time.sleep(0.1)
     return particles
-
-
-#goTo(.3,.3)
-#goTo(0,0)
 
