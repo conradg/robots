@@ -245,13 +245,13 @@ def square(distance = 40):
     print "drawLine:" + str(side4)
 
     go(distance)
-    turn_cw(90)
+    turn_cw(-90)
     go(distance)
-    turn_cw(90)
+    turn_cw(-90)
     go(distance)
-    turn_cw(90)
+    turn_cw(-90)
     go(distance)
-    turn_cw(90)
+    turn_cw(-90)
 
 def square40():
     square(40)
@@ -283,4 +283,4 @@ def goTo (xnew,ynew):
 
     theta = angle
 
-square(40)
+square(10)
