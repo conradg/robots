@@ -1,3 +1,3 @@
-import week1
+import movement
 
-week1.calibrateTolerance()
+movement.calibrateTolerance()

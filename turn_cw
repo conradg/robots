@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import week1
+import movement
 import sys
 
-week1.turn_cw(float(sys.argv[1]))
+movement.turn_cw(float(sys.argv[1]))

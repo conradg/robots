@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import week1
+import movement
 import sys
 
-week1.go(float(sys.argv[1]))
+movement.go(float(sys.argv[1]))
