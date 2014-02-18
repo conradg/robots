@@ -6,8 +6,8 @@ from week3 import *
 #########Constants###########
 #############################
 
-SPEED_TO_MOTO_MAGIC_NUMBER = 100 #voltage?
-SLIPPING_MAGIC_NUMBER = 1.08
+SPEED_TO_MOTO_MAGIC_NUMBER = 200 #voltage?
+SLIPPING_MAGIC_NUMBER =1 # 1.08
 FLIP_MOTORS = 1
 WHEEL_SPACING = 13.5
 WHEEL_DIAMETER  = 5.6
@@ -122,15 +122,21 @@ def straight_drive_loop(dist, turn = False):
     encStartR = BrickPi.Encoder[RIGHT]
     encL = encStartL #0
     encR = encStartR #0
-    targetSpeed = ROTATION_SPEED * forwardFlip # change this
+    targetSpeedMax = ROTATION_SPEED * forwardFlip # change this
+    targetSpeed = targetSpeedMax
     encLTarget = encStartL + leftFlip * (distEncs-STOP_TOLERANCE*forwardFlip)
     encRTarget = encStartR +            (distEncs-STOP_TOLERANCE*forwardFlip)
     increasing = encLTarget>encL #May not work on small enc values
     power_mult_orig = 1.1
     power_mult_cap = 1.5
     power_mult = power_mult_orig
+    min_speed = 30
 
     while True:
+        # proportional gain
+
+        targetSpeed = min(math.fabs(distEncs - encR)/10 + min_speed, targetSpeedMax)
+
         # get distance travelled
         BrickPiUpdateValues()
         encsTravelledL = BrickPi.Encoder[LEFT]
@@ -185,6 +191,14 @@ def straight_drive_loop(dist, turn = False):
     if (turn):
         pointcloud = recalculatePointCloud(pointcloud, 0, angle)
     print encL, encR
+ #   stopMotor()
+  #  time.sleep(2)
+
+   # BrickPiUpdateValues()
+   # encL = BrickPi.Encoder[LEFT] - encStartL
+   # encR = BrickPi.Encoder[RIGHT] - encStartR
+
+    #print encL, encR
 
 def go(distance):
     straight_drive_loop(distance)
@@ -284,4 +298,4 @@ def goTo (xnew,ynew):
 
     theta = angle
 
-square(40)
+#square(40)
