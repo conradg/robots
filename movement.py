@@ -7,7 +7,9 @@ from week3 import *
 #############################
 
 SPEED_TO_MOTO_MAGIC_NUMBER = 100 #voltage?
-SLIPPING_MAGIC_NUMBER =1 # 1.08
+CARPET_SLIP = 1.08
+TABLE_SLIP = 1
+SLIPPING_MAGIC_NUMBER = CARPET_SLIP
 FLIP_MOTORS = 1
 WHEEL_SPACING = 13.5
 WHEEL_DIAMETER  = 5.6
@@ -122,7 +124,7 @@ def straight_drive_loop(dist, turn = False):
     encStartR = BrickPi.Encoder[RIGHT]
     encL = encStartL #0
     encR = encStartR #0
-    targetSpeedMax = ROTATION_SPEED * forwardFlip # change this
+    targetSpeedMax = ROTATION_SPEED
     targetSpeed = targetSpeedMax
     encLTarget = encStartL + leftFlip * (distEncs-STOP_TOLERANCE*forwardFlip)
     encRTarget = encStartR +            (distEncs-STOP_TOLERANCE*forwardFlip)
@@ -151,7 +153,8 @@ def straight_drive_loop(dist, turn = False):
         encLRel = math.fabs(encL-encStartL)
         encRRel = math.fabs(encR-encStartR)
         print targetSpeed
-        targetSpeed = min(math.fabs(distEncs - encRRel)/400 + min_speed, targetSpeedMax)
+        
+        targetSpeed = min((math.fabs(distEncs) - encRRel)/400 + min_speed, targetSpeedMax) * forwardFlip
 
         if math.fabs(encLRel-encRRel) > PATH_THRESHHOLD : #if we get off track, increase the motorSpeed of the slower side to compensate
             if encLRel > encRRel :
