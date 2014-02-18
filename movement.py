@@ -25,6 +25,7 @@ STOP_TOLERANCE = 0
 ############################
 NUMBER_OF_PARTICLES = 100
 pointcloud = [(DISPLAY_SQUARE_MARGIN,DISPLAY_SQUARE_MARGIN+DISPLAY_SQUARE_SIDE,0) for j in range(NUMBER_OF_PARTICLES)]
+pointWeights = [1/NUMBER_OF_PARTICLES for k in range(NUMBER_OF_PARTICLES)]
 
 BrickPiSetup()
 
@@ -260,27 +261,36 @@ x = 0
 y = 0
 theta = 0
 
+def getMeanPosition(pointcloud, pointWeights)
+    meanX = 0
+    meanY = 0
+    meanTheta = 0
+    for i in range(NUMBER_OF_PARTICLES):
+	(xi, yi, thetai) = pointcloud[i]
+	weighti = pointWeights[i]
+        meanX += xi * weighti
+	meanY += yi * weighti
+	meanTheta += thetai * weigthi
+    return (meanX, meanY, meanTheta)
+
 def goTo (xnew,ynew):
-    global x
-    global y
-    global theta
+    #global x
+    #global y
+    #global theta
+
+    (x, y, theta) = getMeanPosition(pointcloud, pointWeights)
+
     xdiff = xnew - x
     ydiff = ynew - y
     angle  = math.atan2(ydiff,xdiff) * (180/math.pi)
     anglediff = angle - theta
-
-    while anglediff > 180: anglediff -=360
-    while anglediff < -180: anglediff +=360
+    if anglediff < 0 :
+        anglediff %= -math.pi 
+    else 
+        anglediff %= math.pi  
 
     distance  = math.sqrt(xdiff**2 + ydiff**2) * 100 # *100 to convert to cm
-    turn_cw(-anglediff)
+    turn_cw(-anglediff/)
     go(distance)
-    x = xnew
-    y = ynew
-
-    while angle > 180: angle -= 360
-    while angle < -180: angle += 360
-
-    theta = angle
 
 square(40)
