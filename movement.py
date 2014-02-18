@@ -23,7 +23,7 @@ ROTATION_SPEED = DEFAULT_SPEED #ROT_CIRCLE_CIRCUM/ROTATION_TIME
 STOP_TOLERANCE = 0
 ############################
 ############################
-NUMBER_OF_PARTICLES = 2
+NUMBER_OF_PARTICLES = 100
 pointcloud = [(DISPLAY_SQUARE_MARGIN,DISPLAY_SQUARE_MARGIN+DISPLAY_SQUARE_SIDE,0) for j in range(NUMBER_OF_PARTICLES)]
 
 BrickPiSetup()
@@ -133,8 +133,8 @@ def straight_drive_loop(dist, turn = False):
     while True:
         # get distance travelled
         BrickPiUpdateValues()
-        encsTravelledL = BrickPi.Encoder[LEFT] -encL
-        encsTravelledR = BrickPi.Encoder[RIGHT] -encR
+        encsTravelledL = BrickPi.Encoder[LEFT] -  encL
+        encsTravelledR = BrickPi.Encoder[RIGHT] - encR
 
         if not turn:
             d = encs_to_dist((encsTravelledL + encsTravelledR)/2)
@@ -194,7 +194,7 @@ def dist_to_enc(distance):
     return 720*distance/WHEEL_CIRC
 
 def encs_to_dist(encs):
-    return WHEEL_CIRC * (encs / 720)
+    return WHEEL_CIRC * (encs / 720.0)
 
 def encs_to_angle(encs):
     return 2*math.pi * (encs_to_dist(encs)/ROT_CIRCLE_CIRCUM)
@@ -243,16 +243,15 @@ def square(distance = 40):
     print "drawLine:" + str(side2)
     print "drawLine:" + str(side3)
     print "drawLine:" + str(side4)
-    print "PC ", pointcloud
 
     go(distance)
-    turn_cw(-90)
+    turn_cw(90)
     go(distance)
-    turn_cw(-90)
+    turn_cw(90)
     go(distance)
-    turn_cw(-90)
+    turn_cw(90)
     go(distance)
-    turn_cw(-90)
+    turn_cw(90)
 
 def square40():
     square(40)
