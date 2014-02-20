@@ -93,7 +93,7 @@ mymap.add_wall((168,210,168,84));   # e
 mymap.add_wall((168,84,210,84));    # f
 mymap.add_wall((210,84,210,0));     # g
 mymap.add_wall((210,0,0,0));        # h
-#mymap.draw();
+#mymap.draw();  
 
 #particles = Particles();
 

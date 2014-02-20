@@ -26,6 +26,10 @@ PATH_THRESHHOLD = 2  #determines how far the bot can stray from it's path before
 ROTATION_TIME = 10 # seconds per rotation
 ROTATION_SPEED = DEFAULT_SPEED #ROT_CIRCLE_CIRCUM/ROTATION_TIME
 STOP_TOLERANCE = 0
+WALL_STOP = 10 #if you get this close to a wall in front of you then stop 
+SONAR_SIGMA = 3.0 #TODO this needs a real value
+DIST_BEFORE_LOCO = 20 #the distance to travel before localising positions
+                      #20 is suggested in the spec but may be too short for our tolerances?
 ############################
 ############################
 NUMBER_OF_PARTICLES = 100
@@ -94,11 +98,11 @@ def turn_cw(deg):
 
     straight_drive_loop(dist_to_rotate, True)
 
-    stopMotor()
+    stopMotors()
 
 
 
-def stopMotor():
+def stopMotors():
     setMotorSpeeds(0)
     time.sleep(1)
 
@@ -142,6 +146,7 @@ def straight_drive_loop(dist, turn = False):
     while True:
         # get distance travelled
         BrickPiUpdateValues()
+
         encsTravelledL = BrickPi.Encoder[LEFT] -  encL
         encsTravelledR = BrickPi.Encoder[RIGHT] - encR
 
@@ -201,7 +206,7 @@ def straight_drive_loop(dist, turn = False):
 
 def go(distance):
     straight_drive_loop(distance)
-    stopMotor()
+    stopMotors()
 
 def dist_to_enc(distance):
     return 720*distance/WHEEL_CIRC
@@ -220,7 +225,7 @@ def rotateWheel(wheel,deg):
         BrickPiUpdateValues()
         print (targetEnc - BrickPi.Encoder[wheel])
         time.sleep(0.01)
-    stopMotor()
+    stopMotors()
     BrickPiUpdateValues()
 
 
@@ -232,7 +237,7 @@ def rotateWheel2(wheel,deg):
         BrickPiUpdateValues()
         print (targetEnc - BrickPi.Encoder[wheel])
         time.sleep(0.01)
-    stopMotor()
+    stopMotors()
     BrickPiUpdateValues()
 
 def go40():
@@ -278,25 +283,25 @@ def getMeanPosition(pointcloud):
 def goTo (xnew,ynew):
     (x, y, theta) = getMeanPosition(pointcloud)
 
-    xdiff = xnew - x
-    ydiff = ynew - y
-    angle  = math.atan2(ydiff,xdiff)
-    anglediff = angle - theta
-    # Modulo pi retaining sign
-    anglediff %= math.pi * (-1 if anglediff < 0 else 1)
+    while not xnew == x or not ynew == y
+        xdiff = xnew - x
+        ydiff = ynew - y
+        angle  = math.atan2(ydiff,xdiff)
+        anglediff = angle - theta
 
-    distance  = math.sqrt(xdiff**2 + ydiff**2) * 100 # *100 to convert to cm
-    turn_cw(-anglediff/(2*math.pi*360))
-    go(distance)
+        # Modulo pi retaining sign
+        anglediff %= math.pi * (-1 if anglediff < 0 else 1)
+    
+        distance  = math.sqrt(xdiff**2 + ydiff**2) * 100 # *100 to convert to cm
+        turn_cw(-anglediff/(2*math.pi*360))
+        go(min(DIST_BEFORE_LOCO, distance))
 
 def getExpectedDist(x, y, theta):
     return 0
 
-sonarSigma = 3.0
-
 def calculate_likelihood(x, y, theta, z):
     m = getExpectedDist(x, y, theta)
-    likelihood = exp((-(z-m) ** 2) / (2 * sonarSigma ** 2))	
+    likelihood = exp((-(z-m) ** 2) / (2 * SONAR_SIGMA ** 2))	
     return likelihood
 
 def updateLikelihoods(z):
@@ -333,6 +338,40 @@ def resample(particlecloud):
     
     return newParticles
 
+simpleWalls = [(0, True), (168, False), (84, True), (210, False), (168, True), (84, False), (210, True), (0, False)]
+
+
+def getExpectedDistance(x1, y2, theta):
+#assumes horizontal /vertical walls
+#assumes 0 < theta < 2 * pi
+#TODO handle case where we are paralell to the wall
+    distance = 300
+
+    for i in range(len(simpleWalls)):
+        const, horizontal = simpleWalls[i]
+           if horizontal:
+               y2 = const 
+               x2 = (1 / math.tan(theta)) * (y2 - y1) - x1
+           else:
+               x2 = const
+               y2 = math.tan(theta) * (x2 - x1) - y1
+    
+        infront = False;
+    
+        if 0 <= theta and theta < math.pi / 2:
+            infront = x1 < x2 and y1 < y2:
+        elif math.pi / 2 <= theta and theta < math.pi:
+            infront = x1 > x2 and y1 < y2:
+        elif math.pi <= theta and theta < 1.5 * math.pi:
+            infront = x1 > x2 and y1 > y2:
+        elif 1.5  * math.pi <= theta and theta < 2 * math.pi:
+            infront = x1 < x2 and y1 > y2:
+
+        if infront:
+            distance = min(distance, math.sqrt((x2 - x1)**2 + (x2 - x1)**2))
+
+return distance
+
 def localise():
 #assumes sensors already set up
     z = BrickPi.Sensor[PORT_1] 
@@ -340,10 +379,16 @@ def localise():
     particlecloud = resample(particlecloud)
 
 def doTheMonteCarlo():
-    while(true):
-        localise()
-        go(20)
-        #TODO add something to stop it running into walls
+    goTo(84, 30)
+    goTo(180, 30)
+    goTo(180, 54)
+    goTo(126, 54)
+    goTo(126, 168)
+    goTo(126, 126)
+    goTo(30, 54)
+    goTo(84, 54)
+    goTo(84, 30)
+	
 
 square(40)
 
