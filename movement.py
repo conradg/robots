@@ -1,6 +1,8 @@
 from BrickPi import *
 import math
+import random
 from week3 import *
+from particleDataStructures import *
 
 #############################
 #########Constants###########
@@ -23,15 +25,22 @@ PATH_THRESHHOLD = 2  #determines how far the bot can stray from it's path before
 ROTATION_TIME = 10 # seconds per rotation
 ROTATION_SPEED = DEFAULT_SPEED #ROT_CIRCLE_CIRCUM/ROTATION_TIME
 STOP_TOLERANCE = 0
+WALL_STOP = 10 #if you get this close to a wall in front of you then stop 
+SONAR_SIGMA = 3.0 #TODO this needs a real value
+DIST_BEFORE_LOCO = 20 #the distance to travel before localising positions
+                      #20 is suggested in the spec but may be too short for our tolerances?
+WAYPOINT_TOLERANCE = 2 #so the robot doesn't try to get infinitely nearer to the waypoint
 ############################
 ############################
 NUMBER_OF_PARTICLES = 100
-pointcloud = [(DISPLAY_SQUARE_MARGIN,DISPLAY_SQUARE_MARGIN+DISPLAY_SQUARE_SIDE,0) for j in range(NUMBER_OF_PARTICLES)]
+pointcloud = [(0,0,0,1/NUMBER_OF_PARTICLES) for j in range(NUMBER_OF_PARTICLES)]
 
 BrickPiSetup()
 
 BrickPi.MotorEnable[LEFT] = 1
 BrickPi.MotorEnable[RIGHT] = 1
+def resetPointcloud():
+    pointcloud = [(0,0,0,1/NUMBER_OF_PARTICLES) for j in range(NUMBER_OF_PARTICLES)]
 
 #sets a wheel speed in centimetres/second
 def setMotorSpeed(speed,port):
@@ -89,11 +98,11 @@ def turn_cw(deg):
 
     straight_drive_loop(dist_to_rotate, True)
 
-    stopMotor()
+    stopMotors()
 
 
 
-def stopMotor():
+def stopMotors():
     setMotorSpeeds(0)
     time.sleep(1)
 
@@ -137,6 +146,7 @@ def straight_drive_loop(dist, turn = False):
     while True:
         # get distance travelled
         BrickPiUpdateValues()
+
         encsTravelledL = BrickPi.Encoder[LEFT] -  encL
         encsTravelledR = BrickPi.Encoder[RIGHT] - encR
 
@@ -152,9 +162,8 @@ def straight_drive_loop(dist, turn = False):
         # adjust for drift
         encLRel = math.fabs(encL-encStartL)
         encRRel = math.fabs(encR-encStartR)
-        print targetSpeed
-        
-        targetSpeed = min((math.fabs(distEncs) - encRRel)/400 + min_speed, targetSpeedMax) * forwardFlip
+        targetSpeed = min(math.fabs(distEncs - math.fabs(encRRel))/400 + min_speed, targetSpeedMax)
+
 
         if math.fabs(encLRel-encRRel) > PATH_THRESHHOLD : #if we get off track, increase the motorSpeed of the slower side to compensate
             if encLRel > encRRel :
@@ -197,7 +206,7 @@ def straight_drive_loop(dist, turn = False):
 
 def go(distance):
     straight_drive_loop(distance)
-    stopMotor()
+    stopMotors()
 
 def dist_to_enc(distance):
     return 720*distance/WHEEL_CIRC
@@ -216,7 +225,7 @@ def rotateWheel(wheel,deg):
         BrickPiUpdateValues()
         print (targetEnc - BrickPi.Encoder[wheel])
         time.sleep(0.01)
-    stopMotor()
+    stopMotors()
     BrickPiUpdateValues()
 
 
@@ -228,30 +237,21 @@ def rotateWheel2(wheel,deg):
         BrickPiUpdateValues()
         print (targetEnc - BrickPi.Encoder[wheel])
         time.sleep(0.01)
-    stopMotor()
+    stopMotors()
     BrickPiUpdateValues()
 
 def go40():
     go(40)
 
 def square(distance = 40):
+    resetPointcloud()
 
-    global pointcloud
-    global PHYSICAL_SQUARE_SIDE
-
-    PHYSICAL_SQUARE_SIDE = distance
-
-    dsm = DISPLAY_SQUARE_MARGIN
-    dss = DISPLAY_SQUARE_SIDE
-    side1 = (dsm, dsm, dss+dsm, dsm)
-    side2 = (dss+dsm, dsm, dss+dsm, dss+dsm)
-    side3 = (dss+dsm, dss+dsm, dsm, dss+dsm)
-    side4 = (dsm, dss+dsm, dsm, dsm)
-
-    print "drawLine:" + str(side1)
-    print "drawLine:" + str(side2)
-    print "drawLine:" + str(side3)
-    print "drawLine:" + str(side4)
+    squaremap = Map()
+    squaremap.add_wall((0,0,40,0))
+    squaremap.add_wall((40,0,40,40))
+    squaremap.add_wall((40,40,0,40))
+    squaremap.add_wall((0,40,0,0))
+    squaremap.draw()
 
     go(distance)
     turn_cw(-90)
@@ -269,25 +269,127 @@ x = 0
 y = 0
 theta = 0
 
+def getMeanPosition(pointcloud):
+    meanX = 0
+    meanY = 0
+    meanTheta = 0
+    for i in range(NUMBER_OF_PARTICLES):
+	(xi, yi, thetai, weighti) = pointcloud[i]
+        meanX += xi * weighti
+	meanY += yi * weighti
+	meanTheta += thetai * weigthi
+    return (meanX, meanY, meanTheta)
+
 def goTo (xnew,ynew):
-    global x
-    global y
-    global theta
-    xdiff = xnew - x
-    ydiff = ynew - y
-    angle  = math.atan2(ydiff,xdiff) * (180/math.pi)
-    anglediff = angle - theta
+    (x, y, theta) = getMeanPosition(pointcloud)
 
-    while anglediff > 180: anglediff -=360
-    while anglediff < -180: anglediff +=360
+    while not maths.abs(xnew - x) < WAYPOINT_TOLERANCE or not maths.abs(ynew - y) < WAYPOINT_TOLERANCE:
+        xdiff = xnew - x
+        ydiff = ynew - y
+        angle  = math.atan2(ydiff,xdiff)
+        anglediff = angle - theta
 
-    distance  = math.sqrt(xdiff**2 + ydiff**2) * 100 # *100 to convert to cm
-    turn_cw(-anglediff)
-    go(distance)
-    x = xnew
-    y = ynew
+        # Modulo pi retaining sign
+        anglediff %= math.pi * (-1 if anglediff < 0 else 1)
+    
+        distance  = math.sqrt(xdiff**2 + ydiff**2) * 100 # *100 to convert to cm
+        turn_cw(-anglediff/(2*math.pi*360))
+        go(min(DIST_BEFORE_LOCO, distance))
 
-    while angle > 180: angle -= 360
-    while angle < -180: angle += 360
+def getExpectedDist(x, y, theta):
+    return 0
 
-    theta = angle
+def calculate_likelihood(x, y, theta, z):
+    m = getExpectedDist(x, y, theta)
+    likelihood = exp((-(z-m) ** 2) / (2 * SONAR_SIGMA ** 2))	
+    return likelihood
+
+def updateLikelihoods(z):
+    weightTotal = 0
+    for i in range(len(particles)):
+        x, y, theta = particles[i]
+        likelihood = calculate_likelihood(x, y, theta, z)
+        particles[i] = (x, y, theta, likelihood)
+        weightTotal += likelihood
+    
+    for i in range(len(particles)):
+        x, y, theta, w = particles[i]
+        w /= weightTotal
+        particles[i] = (x, y, theta, z)
+
+def resample(particlecloud):
+    len = len(particlecloud)
+    cumalativeWeights = [0 for j in range(len)]
+    for i in range(len):
+        if(i == 0):
+            cumalativeWeights = particecloud[0]
+        else:
+            cumalativeWeights = cumalativeWeights[i-1] + particleclous[i]
+    
+    newParticles = [0 for k in range(len)]
+    for l in range(len):
+        rnd = random.random()
+        for m in range(len):
+            if(rnd < cumalativeWeights[m]):
+                x, y, theta, w = particlecloud[m]
+                break
+        newParticle = (x, y, theta, 1 / len)
+        newParticles[l] = newParticle
+    
+    return newParticles
+
+simpleWalls = [(0, True), (168, False), (84, True), (210, False), (168, True), (84, False), (210, True), (0, False)]
+
+
+def getExpectedDistance(x1, y2, theta):
+#assumes horizontal / vertical walls
+#assumes 0 < theta < 2 * pi
+    distance = 300
+
+    for i in range(len(simpleWalls)):
+        const, horizontal = simpleWalls[i]
+        if horizontal:
+            if theta == 0 or theta == math.pi: continue
+            y2 = const 
+            x2 = (1 / math.tan(theta)) * (y2 - y1) - x1
+        else:
+            if theta == math.pi / 2 or theta == 1.5 * math.pi: continue
+            x2 = const
+            y2 = math.tan(theta) * (x2 - x1) - y1
+    
+        infront = False
+    
+        if 0 <= theta and theta < math.pi / 2:
+            infront = x1 < x2 and y1 < y2
+        elif math.pi / 2 <= theta and theta < math.pi:
+            infront = x1 > x2 and y1 < y2
+        elif math.pi <= theta and theta < 1.5 * math.pi:
+            infront = x1 > x2 and y1 > y2
+        elif 1.5  * math.pi <= theta and theta < 2 * math.pi:
+            infront = x1 < x2 and y1 > y2
+
+        if infront:
+            distance = min(distance, math.sqrt((x2 - x1)**2 + (x2 - x1)**2))
+
+    return distance
+
+def localise():
+#assumes sensors already set up
+    z = BrickPi.Sensor[PORT_1] 
+    updateLikelihoods(z)
+    particlecloud = resample(particlecloud)
+
+def doTheMonteCarlo():
+    goTo(84, 30)
+    goTo(180, 30)
+    goTo(180, 54)
+    goTo(126, 54)
+    goTo(126, 168)
+    goTo(126, 126)
+    goTo(30, 54)
+    goTo(84, 54)
+    goTo(84, 30)
+	
+
+square(40)
+
