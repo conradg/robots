@@ -2,7 +2,6 @@ from BrickPi import *
 import math
 import random
 from week3 import *
-from wee4 import *
 from particleDataStructures import *
 
 #############################
@@ -283,7 +282,7 @@ def getMeanPosition(pointcloud):
 def goTo (xnew,ynew):
     (x, y, theta) = getMeanPosition(pointcloud)
 
-    while not xnew == x or not ynew == y
+    while not xnew == x or not ynew == y:
         xdiff = xnew - x
         ydiff = ynew - y
         angle  = math.atan2(ydiff,xdiff)
@@ -349,28 +348,28 @@ def getExpectedDistance(x1, y2, theta):
 
     for i in range(len(simpleWalls)):
         const, horizontal = simpleWalls[i]
-           if horizontal:
-               y2 = const 
-               x2 = (1 / math.tan(theta)) * (y2 - y1) - x1
-           else:
-               x2 = const
-               y2 = math.tan(theta) * (x2 - x1) - y1
+        if horizontal:
+            y2 = const 
+            x2 = (1 / math.tan(theta)) * (y2 - y1) - x1
+        else:
+            x2 = const
+            y2 = math.tan(theta) * (x2 - x1) - y1
     
-        infront = False;
+        infront = False
     
         if 0 <= theta and theta < math.pi / 2:
-            infront = x1 < x2 and y1 < y2:
+            infront = x1 < x2 and y1 < y2
         elif math.pi / 2 <= theta and theta < math.pi:
-            infront = x1 > x2 and y1 < y2:
+            infront = x1 > x2 and y1 < y2
         elif math.pi <= theta and theta < 1.5 * math.pi:
-            infront = x1 > x2 and y1 > y2:
+            infront = x1 > x2 and y1 > y2
         elif 1.5  * math.pi <= theta and theta < 2 * math.pi:
-            infront = x1 < x2 and y1 > y2:
+            infront = x1 < x2 and y1 > y2
 
         if infront:
             distance = min(distance, math.sqrt((x2 - x1)**2 + (x2 - x1)**2))
 
-return distance
+    return distance
 
 def localise():
 #assumes sensors already set up
