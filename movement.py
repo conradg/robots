@@ -1,6 +1,7 @@
 from BrickPi import *
 import math
 from week3 import *
+from particleDataStructures import *
 
 #############################
 #########Constants###########
@@ -26,13 +27,16 @@ STOP_TOLERANCE = 0
 ############################
 ############################
 NUMBER_OF_PARTICLES = 100
-pointcloud = [(DISPLAY_SQUARE_MARGIN,DISPLAY_SQUARE_MARGIN+DISPLAY_SQUARE_SIDE,0) for j in range(NUMBER_OF_PARTICLES)]
-pointWeights = [1/NUMBER_OF_PARTICLES for k in range(NUMBER_OF_PARTICLES)]
+#pointcloud = [(DISPLAY_SQUARE_MARGIN,DISPLAY_SQUARE_MARGIN+DISPLAY_SQUARE_SIDE,0) for j in range(NUMBER_OF_PARTICLES)]
+pointcloud = [(0,0,0,1/NUMBER_OF_PARTICLES) for j in range(NUMBER_OF_PARTICLES)]
+#pointWeights = [1/NUMBER_OF_PARTICLES for k in range(NUMBER_OF_PARTICLES)]
 
 BrickPiSetup()
 
 BrickPi.MotorEnable[LEFT] = 1
 BrickPi.MotorEnable[RIGHT] = 1
+def resetPointcloud():
+    pointcloud = [(0,0,0,1/NUMBER_OF_PARTICLES) for j in range(NUMBER_OF_PARTICLES)]
 
 #sets a wheel speed in centimetres/second
 def setMotorSpeed(speed,port):
@@ -236,22 +240,31 @@ def go40():
 
 def square(distance = 40):
 
-    global pointcloud
-    global PHYSICAL_SQUARE_SIDE
+#    global pointcloud
+#    global PHYSICAL_SQUARE_SIDE
 
-    PHYSICAL_SQUARE_SIDE = distance
+#    PHYSICAL_SQUARE_SIDE = distance
 
-    dsm = DISPLAY_SQUARE_MARGIN
-    dss = DISPLAY_SQUARE_SIDE
-    side1 = (dsm, dsm, dss+dsm, dsm)
-    side2 = (dss+dsm, dsm, dss+dsm, dss+dsm)
-    side3 = (dss+dsm, dss+dsm, dsm, dss+dsm)
-    side4 = (dsm, dss+dsm, dsm, dsm)
+#    dsm = DISPLAY_SQUARE_MARGIN
+#    dss = DISPLAY_SQUARE_SIDE
+#    side1 = (dsm, dsm, dss+dsm, dsm)
+#    side2 = (dss+dsm, dsm, dss+dsm, dss+dsm)
+#    side3 = (dss+dsm, dss+dsm, dsm, dss+dsm)
+#    side4 = (dsm, dss+dsm, dsm, dsm)
 
-    print "drawLine:" + str(side1)
-    print "drawLine:" + str(side2)
-    print "drawLine:" + str(side3)
-    print "drawLine:" + str(side4)
+#    print "drawLine:" + str(side1)
+#    print "drawLine:" + str(side2)
+#    print "drawLine:" + str(side3)
+#    print "drawLine:" + str(side4)
+
+    resetPointcloud()
+
+    squaremap = Map()
+    squaremap.add_wall((0,0,40,0))
+    squaremap.add_wall((40,0,40,40))
+    squaremap.add_wall((40,40,0,40))
+    squaremap.add_wall((0,40,0,0))
+    squaremap.draw()
 
     go(distance)
     turn_cw(-90)
@@ -269,13 +282,12 @@ x = 0
 y = 0
 theta = 0
 
-def getMeanPosition(pointcloud, pointWeights)
+def getMeanPosition(pointcloud):
     meanX = 0
     meanY = 0
     meanTheta = 0
     for i in range(NUMBER_OF_PARTICLES):
-	(xi, yi, thetai) = pointcloud[i]
-	weighti = pointWeights[i]
+	(xi, yi, thetai, weighti) = pointcloud[i]
         meanX += xi * weighti
 	meanY += yi * weighti
 	meanTheta += thetai * weigthi
@@ -283,7 +295,7 @@ def getMeanPosition(pointcloud, pointWeights)
 
 def goTo (xnew,ynew):
 
-    (x, y, theta) = getMeanPosition(pointcloud, pointWeights)
+    (x, y, theta) = getMeanPosition(pointcloud)
 
     xdiff = xnew - x
     ydiff = ynew - y
@@ -293,7 +305,8 @@ def goTo (xnew,ynew):
     anglediff %= math.pi * (-1 if anglediff < 0 else 1)
 
     distance  = math.sqrt(xdiff**2 + ydiff**2) * 100 # *100 to convert to cm
-    turn_cw(-anglediff)
+    turn_cw(-anglediff/(2*math.pi*360))
     go(distance)
 
 square(40)
+
