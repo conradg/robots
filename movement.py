@@ -29,6 +29,7 @@ WALL_STOP = 10 #if you get this close to a wall in front of you then stop
 SONAR_SIGMA = 3.0 #TODO this needs a real value
 DIST_BEFORE_LOCO = 20 #the distance to travel before localising positions
                       #20 is suggested in the spec but may be too short for our tolerances?
+WAYPOINT_TOLERANCE = 2 #so the robot doesn't try to get infinitely nearer to the waypoint
 ############################
 ############################
 NUMBER_OF_PARTICLES = 100
@@ -282,7 +283,7 @@ def getMeanPosition(pointcloud):
 def goTo (xnew,ynew):
     (x, y, theta) = getMeanPosition(pointcloud)
 
-    while not xnew == x or not ynew == y:
+    while not maths.abs(xnew - x) < WAYPOINT_TOLERANCE or not maths.abs(ynew - y) < WAYPOINT_TOLERANCE:
         xdiff = xnew - x
         ydiff = ynew - y
         angle  = math.atan2(ydiff,xdiff)
@@ -341,17 +342,18 @@ simpleWalls = [(0, True), (168, False), (84, True), (210, False), (168, True), (
 
 
 def getExpectedDistance(x1, y2, theta):
-#assumes horizontal /vertical walls
+#assumes horizontal / vertical walls
 #assumes 0 < theta < 2 * pi
-#TODO handle case where we are paralell to the wall
     distance = 300
 
     for i in range(len(simpleWalls)):
         const, horizontal = simpleWalls[i]
         if horizontal:
+            if theta == 0 or theta == math.pi: continue
             y2 = const 
             x2 = (1 / math.tan(theta)) * (y2 - y1) - x1
         else:
+            if theta == math.pi / 2 or theta == 1.5 * math.pi: continue
             x2 = const
             y2 = math.tan(theta) * (x2 - x1) - y1
     
