@@ -8,10 +8,6 @@ sigmaDist = 0.5 #standard dev (possible error) for distance
 sigmaAngle = 0.005 #standard dev (possible error) for angle on forward movement
 sigmaTurn = math.pi/36 #standard dev (possible error) for angle on turn
 
-#DISPLAY_SQUARE_MARGIN = 100
-#DISPLAY_SQUARE_SIDE   = 500
-#PHYSICAL_SQUARE_SIDE  = 40
-
 def getRandomErrorDist():
     return random.gauss(mu, sigmaDist)
 
@@ -22,7 +18,6 @@ def getRandomErrorTurn():
     return random.gauss(mu, sigmaTurn)
 
 def recalculatePointCloud(particles, d, dtheta):
-    #d = (DISPLAY_SQUARE_SIDE * accd) / PHYSICAL_SQUARE_SIDE
     for i in range(len(particles)):
         x, y, theta, weight = particles[i]
         print "position: " , x , y 
@@ -38,8 +33,6 @@ def recalculatePointCloud(particles, d, dtheta):
 def drawNewPointCloud(particles, d, dtheta):
     print "drawing particles"
     particles = recalculatePointCloud(particles, d, dtheta)
-    #print "drawParticles:"  + str(particles)
     canvas.drawParticles(particles)
-    #time.sleep(0.1)
     return particles
 

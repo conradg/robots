@@ -1,6 +1,8 @@
 from BrickPi import *
 import math
+import random
 from week3 import *
+from wee4 import *
 from particleDataStructures import *
 
 #############################
@@ -27,9 +29,7 @@ STOP_TOLERANCE = 0
 ############################
 ############################
 NUMBER_OF_PARTICLES = 100
-#pointcloud = [(DISPLAY_SQUARE_MARGIN,DISPLAY_SQUARE_MARGIN+DISPLAY_SQUARE_SIDE,0) for j in range(NUMBER_OF_PARTICLES)]
 pointcloud = [(0,0,0,1/NUMBER_OF_PARTICLES) for j in range(NUMBER_OF_PARTICLES)]
-#pointWeights = [1/NUMBER_OF_PARTICLES for k in range(NUMBER_OF_PARTICLES)]
 
 BrickPiSetup()
 
@@ -239,24 +239,6 @@ def go40():
     go(40)
 
 def square(distance = 40):
-
-#    global pointcloud
-#    global PHYSICAL_SQUARE_SIDE
-
-#    PHYSICAL_SQUARE_SIDE = distance
-
-#    dsm = DISPLAY_SQUARE_MARGIN
-#    dss = DISPLAY_SQUARE_SIDE
-#    side1 = (dsm, dsm, dss+dsm, dsm)
-#    side2 = (dss+dsm, dsm, dss+dsm, dss+dsm)
-#    side3 = (dss+dsm, dss+dsm, dsm, dss+dsm)
-#    side4 = (dsm, dss+dsm, dsm, dsm)
-
-#    print "drawLine:" + str(side1)
-#    print "drawLine:" + str(side2)
-#    print "drawLine:" + str(side3)
-#    print "drawLine:" + str(side4)
-
     resetPointcloud()
 
     squaremap = Map()
@@ -294,7 +276,6 @@ def getMeanPosition(pointcloud):
     return (meanX, meanY, meanTheta)
 
 def goTo (xnew,ynew):
-
     (x, y, theta) = getMeanPosition(pointcloud)
 
     xdiff = xnew - x
@@ -307,6 +288,62 @@ def goTo (xnew,ynew):
     distance  = math.sqrt(xdiff**2 + ydiff**2) * 100 # *100 to convert to cm
     turn_cw(-anglediff/(2*math.pi*360))
     go(distance)
+
+def getExpectedDist(x, y, theta):
+    return 0
+
+sonarSigma = 3.0
+
+def calculate_likelihood(x, y, theta, z):
+    m = getExpectedDist(x, y, theta)
+    likelihood = exp((-(z-m) ** 2) / (2 * sonarSigma ** 2))	
+    return likelihood
+
+def updateLikelihoods(z):
+    weightTotal = 0
+    for i in range(len(particles)):
+        x, y, theta = particles[i]
+        likelihood = calculate_likelihood(x, y, theta, z)
+        particles[i] = (x, y, theta, likelihood)
+        weightTotal += likelihood
+    
+    for i in range(len(particles)):
+        x, y, theta, w = particles[i]
+        w /= weightTotal
+        particles[i] = (x, y, theta, z)
+
+def resample(particlecloud):
+    len = len(particlecloud)
+    cumalativeWeights = [0 for j in range(len)]
+    for i in range(len):
+        if(i == 0):
+            cumalativeWeights = particecloud[0]
+        else:
+            cumalativeWeights = cumalativeWeights[i-1] + particleclous[i]
+    
+    newParticles = [0 for k in range(len)]
+    for l in range(len):
+        rnd = random.random()
+        for m in range(len):
+            if(rnd < cumalativeWeights[m]):
+                x, y, theta, w = particlecloud[m]
+                break
+        newParticle = (x, y, theta, 1 / len)
+        newParticles[l] = newParticle
+    
+    return newParticles
+
+def localise():
+#assumes sensors already set up
+    z = BrickPi.Sensor[PORT_1] 
+    updateLikelihoods(z)
+    particlecloud = resample(particlecloud)
+
+def doTheMonteCarlo():
+    while(true):
+        localise()
+        go(20)
+        #TODO add something to stop it running into walls
 
 square(40)
 
