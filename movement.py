@@ -162,7 +162,8 @@ def straight_drive_loop(dist, turn = False):
         # adjust for drift
         encLRel = math.fabs(encL-encStartL)
         encRRel = math.fabs(encR-encStartR)
-        targetSpeed = min(math.fabs(distEncs - math.fabs(encRRel))/400 + min_speed, targetSpeedMax)
+
+        targetSpeed = min((math.fabs(distEncs) - encRRel)/400 + min_speed, targetSpeedMax) * forwardFlip
 
 
         if math.fabs(encLRel-encRRel) > PATH_THRESHHOLD : #if we get off track, increase the motorSpeed of the slower side to compensate
@@ -301,7 +302,8 @@ def getExpectedDist(x, y, theta):
 
 def calculate_likelihood(x, y, theta, z):
     m = getExpectedDist(x, y, theta)
-    likelihood = exp((-(z-m) ** 2) / (2 * SONAR_SIGMA ** 2))	
+    likelihood = 0.005 + exp((-(z-m) ** 2) / (2 * SONAR_SIGMA ** 2))
+    #TODO maybe the likelihood magic number should be a global	
     return likelihood
 
 def updateLikelihoods(z):
