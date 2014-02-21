@@ -33,6 +33,9 @@ BrickPiSetup()
 
 BrickPi.MotorEnable[LEFT] = 1
 BrickPi.MotorEnable[RIGHT] = 1
+BrickPi.SensorType[PORT_1] = TYPE_SENSOR_ULTRASONIC_CONT
+BrickPiSetupSensors()
+
 #sets a wheel speed in centimetres/second
 def setMotorSpeed(speed,port):
 	BrickPi.MotorSpeed[port] = int(speed*SPEED_TO_MOTO_MAGIC_NUMBER)

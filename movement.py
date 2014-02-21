@@ -7,9 +7,9 @@ from week3 import *
 from particleDataStructures import *
 
 def goTo (xnew,ynew):
-    (x, y, theta) = getMeanPosition(pointcloud)
+    (x, y, theta) = getMeanPosition()
 
-    while not maths.abs(xnew - x) < WAYPOINT_TOLERANCE or not maths.abs(ynew - y) < WAYPOINT_TOLERANCE:
+    while not math.fabs(xnew - x) < WAYPOINT_TOLERANCE or not math.fabs(ynew - y) < WAYPOINT_TOLERANCE:
         localise()
         xdiff = xnew - x
         ydiff = ynew - y
@@ -25,9 +25,12 @@ def goTo (xnew,ynew):
 
 def localise():
 #assumes sensors already set up
-    z = BrickPi.Sensor[PORT_1] 
+    result = BrickPiUpdateValues()
+    z = 300
+    if not result:
+        z = BrickPi.Sensor[PORT_1] 
     updateLikelihoods(z)
-    particlecloud = resample(particlecloud)
+    particlecloud = resample()
 
 def go(distance):
     straight_drive_loop(distance)

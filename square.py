@@ -2,7 +2,7 @@ from movement import *
 from particleDataStructures import *
 
 def square(distance = 40):
-    resetPointcloud()
+    resetPointCloud()
 
     squaremap = Map()
     squaremap.add_wall((0,0,40,0))

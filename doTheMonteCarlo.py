@@ -1,6 +1,7 @@
 from movement import *
 
-time.sleep(10);
+#time.sleep(10);
+resetParticleCloud()
 
 def doTheMonteCarlo():
     goTo(84, 30)
