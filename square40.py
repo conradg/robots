@@ -1,3 +1,0 @@
-import movement
-
-movement.square()
