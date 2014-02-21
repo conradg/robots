@@ -60,7 +60,7 @@ def calibrateTolerance():
         BrickPiUpdateValues()
         encL = BrickPi.Encoder[LEFT]
         encR = BrickPi.Encoder[RIGHT]
-        turn_cw(90)
+        turn_acw(90)
         BrickPiUpdateValues()
         encLNew = BrickPi.Encoder[LEFT]
         encRNew = BrickPi.Encoder[RIGHT]
@@ -89,12 +89,12 @@ def loadTolerance():
     f.close()
     print "STOP Tolerance:", STOP_TOLERANCE
 
-def turn_cw(deg):
+def turn_acw(deg):
     deg = deg*SLIPPING_MAGIC_NUMBER
     BrickPiUpdateValues()
     dist_to_rotate = ROT_CIRCLE_CIRCUM*(deg/360.0)
-    if deg<0: print "Turning left"
-    else: print "Turning right"
+    #if deg<0: print "Turning left"
+    #else: print "Turning right"
 
     straight_drive_loop(dist_to_rotate, True)
 
@@ -203,7 +203,7 @@ def straight_drive_loop(dist, turn = False):
     angle = - encs_to_angle((encR - encL)/2)
     if (turn):
         pointcloud = drawNewPointCloud(pointcloud, 0, angle)
-    print encL, encR
+    #print encL, encR
 
 def go(distance):
     straight_drive_loop(distance)
@@ -224,7 +224,7 @@ def rotateWheel(wheel,deg):
     BrickPi.MotorSpeed[wheel] = 2000
     while (BrickPi.Encoder[wheel] < targetEnc):
         BrickPiUpdateValues()
-        print (targetEnc - BrickPi.Encoder[wheel])
+        #print (targetEnc - BrickPi.Encoder[wheel])
         time.sleep(0.01)
     stopMotors()
     BrickPiUpdateValues()
@@ -236,7 +236,7 @@ def rotateWheel2(wheel,deg):
     BrickPi.MotorSpeed[wheel] = -40
     while (BrickPi.Encoder[wheel] > targetEnc):
         BrickPiUpdateValues()
-        print (targetEnc - BrickPi.Encoder[wheel])
+        #print (targetEnc - BrickPi.Encoder[wheel])
         time.sleep(0.01)
     stopMotors()
     BrickPiUpdateValues()
@@ -255,13 +255,13 @@ def square(distance = 40):
     squaremap.draw()
 
     go(distance)
-    turn_cw(-90)
+    turn_acw(90)
     go(distance)
-    turn_cw(-90)
+    turn_acw(90)
     go(distance)
-    turn_cw(-90)
+    turn_acw(90)
     go(distance)
-    turn_cw(-90)
+    turn_acw(90)
 
 def square40():
     square(40)
@@ -294,7 +294,7 @@ def goTo (xnew,ynew):
         anglediff %= math.pi * (-1 if anglediff < 0 else 1)
     
         distance  = math.sqrt(xdiff**2 + ydiff**2) * 100 # *100 to convert to cm
-        turn_cw(-anglediff/(2*math.pi*360))
+        turn_acw(-anglediff/(2*math.pi*360))
         go(min(DIST_BEFORE_LOCO, distance))
 
 def getExpectedDist(x, y, theta):
