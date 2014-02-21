@@ -1,4 +1,3 @@
+from movement import *
 
-import week1
-
-week1.go40()
+go(40)
