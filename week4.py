@@ -24,7 +24,7 @@ def resetParticleCloud():
     print 'resetting particle cloud'
     startx = 150
     starty = 30
-    global particleCloud 
+    global particleCloud
     particleCloud = [(startx,starty,0,0.01) for j in range(NUMBER_OF_PARTICLES)]
 
 
@@ -47,7 +47,7 @@ def resample():
             cumalativeWeights[0] = particleCloud[0][3]
         else:
             cumalativeWeights[i] = cumalativeWeights[i-1] + particleCloud[i][3]
-    
+
     newParticleCloud = [0 for k in range(length)]
 
     for l in range(length):
@@ -59,7 +59,7 @@ def resample():
         newParticle = (x, y, theta, 1 / length)
 
         newParticleCloud[l] = newParticle
-    
+
     return newParticleCloud
 
 

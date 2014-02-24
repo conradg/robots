@@ -9,36 +9,34 @@ from particleDataStructures import *
 def goTo (xnew,ynew):
     (x, y, theta) = week4.getMeanPosition()
     localise()
-    
-    while not math.fabs(xnew - x) < week4.WAYPOINT_TOLERANCE or not math.fabs(ynew - y) < week4.WAYPOINT_TOLERANCE:    
-        
+
+    while not math.fabs(xnew - x) < week4.WAYPOINT_TOLERANCE or not math.fabs(ynew - y) < week4.WAYPOINT_TOLERANCE:
+
         xdiff = xnew - x
         ydiff = ynew - y
         angle  = math.atan2(ydiff,xdiff)
         anglediff = angle - theta
-            
+
         print "theta", theta, "angle", angle
 
         # Modulo pi retaining sign
-        # anglediff %= math.pi * (-1 if anglediff < 0 else 1)
-        while anglediff>math.pi: anglediff-=2*math.pi
-        while anglediff<-math.pi: anglediff+=2*math.pi
-        
+        anglediff %= math.pi * (-1 if anglediff < 0 else 1)
+
         distance  = math.sqrt(xdiff**2 + ydiff**2) # *100 to convert to cm
         turn_acw(180*anglediff/(math.pi))
         go(min(DIST_BEFORE_LOCO, distance))
-        
+
         localise()
         (x, y, theta) = week4.getMeanPosition()
         print 'x', x, 'y', y
-       
+
 
 def localise():
 #assumes sensors already set up
     result = BrickPiUpdateValues()
     z = 300
     if not result:
-        z = BrickPi.Sensor[PORT_1] 
+        z = BrickPi.Sensor[PORT_1]
     week4.updateLikelihoods(z)
     canvas.drawParticles(week4.particleCloud)
     print week4.particleCloud
@@ -52,7 +50,7 @@ def go(distance):
 def turn_acw(deg):
     deg = deg*SLIPPING_MAGIC_NUMBER
     if deg<5: return
-    
+
     BrickPiUpdateValues()
     dist_to_rotate = ROT_CIRCLE_CIRCUM*(deg/360.0)
     #if deg<0: print "Turning left"
