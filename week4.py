@@ -7,6 +7,7 @@ K = 0.005
 NUMBER_OF_PARTICLES = 100
 particleCloud = 0
 
+#simpleWalls format [start,vertical, start, finish]
 simpleWalls = [(0, True, 0, 168), (168, False, 0,84), (84, True, 126,168), (210, False, 84,168), (168, True,84,210), (84, False, 168, 210), (210, True, 0, 84), (0, False, 0, 210)]
 
 #from conrad, not used yet
@@ -19,6 +20,16 @@ point_map = {'O': (0,0), \
 'F': (168,84),\
 'G': (210,84),\
 'H': (210,0)}
+
+def MAKE_MA_WALLS(pairs){
+        walls = None
+        for i in length(pairs):
+            start , end  = pairs[i]
+            x0 , y0 = point_map[x]
+            x1 , y1 = point_map[y]
+            vertical = x0 == x1
+            walls.append((x0 if vertical else y0 , vertical, ,)
+        return walls
 
 def resetParticleCloud():
     print 'resetting particle cloud'
@@ -38,6 +49,7 @@ def getMeanPosition():
 	meanY += yi * weighti
 	meanTheta += thetai * weighti
     return (meanX, meanY, meanTheta)
+
 
 def resample():
     length = len(particleCloud)
@@ -76,8 +88,10 @@ def updateLikelihoods(z):
         w /= weightTotal
         particleCloud[i] = (x, y, theta, w)
 
+
 def calculate_likelihood(x, y, theta, z):
     m = getExpectedDistance(x, y, theta)
+    print "x:", x, "| y:", y, "| theta:",theta, "| m:", m
     numerator = -((z-m) ** 2)
     denominator = 2 * (SONAR_SIGMA ** 2)
     power = numerator / denominator
@@ -85,6 +99,7 @@ def calculate_likelihood(x, y, theta, z):
     likelihood = K + probability
     #TODO maybe the likelihood magic number should be a global
     return likelihood
+
 
 def getExpectedDistance(x1, y1, theta):
 #assumes horizontal / vertical walls
@@ -96,14 +111,14 @@ def getExpectedDistance(x1, y1, theta):
         if horizontal:
             if theta == 0 or theta == math.pi: continue
             y2 = const
-            x2 = (1 / math.tan(theta)) * (y2 - y1) - x1
-            if x2<finish and x2>start:
+            x2 = (y2 -y1) / math.tan(theta) + x1
+            if start<x2<finish:
                 in_range = True
         else:
             if theta == math.pi / 2 or theta == 1.5 * math.pi: continue
             x2 = const
-            y2 = math.tan(theta) * (x2 - x1) - y1
-            if y2<finish and y2>start:
+            y2 = math.tan(theta) * (x2 - x1) + y1
+            if start<y2<finish:
                 in_range = True
         in_front = False
 
@@ -111,13 +126,13 @@ def getExpectedDistance(x1, y1, theta):
             in_front = x1 < x2 and y1 < y2
         elif math.pi / 2 <= theta and theta < math.pi:
             in_front = x1 > x2 and y1 < y2
-        elif math.pi <= theta and theta < 1.5 * math.pi:
+        elif -1*math.pi <= theta and theta < -0.5 * math.pi:
             in_front = x1 > x2 and y1 > y2
-        elif 1.5  * math.pi <= theta and theta < 2 * math.pi:
+        elif -0.5  * math.pi <= theta and theta < 0:
             in_front = x1 < x2 and y1 > y2
 
         if in_front and in_range:
             distance = min(distance, math.sqrt((x2 - x1)**2 + (y2 - y1)**2))
-
+            print math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
     return distance
 
