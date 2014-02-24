@@ -1,4 +1,16 @@
 from BrickPi import *
+iest = [
+    (2,6),
+    (3,4),
+    (3,8),
+    (4,7),
+    (6,2),
+    (6,4),
+    (7,3),
+    (7,4),
+    (8,5),
+    (7,6)
+]
 import math
 import random
 from setup import *
@@ -17,7 +29,7 @@ def goTo (xnew,ynew):
         angle  = math.atan2(ydiff,xdiff)
         anglediff = angle - theta
             
-        print "theta", theta, "angle", angle
+        #print "theta", theta, "angle", angle
 
         # Modulo pi retaining sign
         # anglediff %= math.pi * (-1 if anglediff < 0 else 1)
@@ -30,7 +42,7 @@ def goTo (xnew,ynew):
         
         localise()
         (x, y, theta) = week4.getMeanPosition()
-        print 'x', x, 'y', y
+        #print 'x', x, 'y', y
        
 
 def localise():
@@ -41,7 +53,7 @@ def localise():
         z = BrickPi.Sensor[PORT_1] 
     week4.updateLikelihoods(z)
     canvas.drawParticles(week4.particleCloud)
-    print week4.particleCloud
+    #print week4.particleCloud
     time.sleep(2.0)
     week4.particlecloud = week4.resample()
 
