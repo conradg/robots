@@ -49,7 +49,7 @@ def turn_acw(deg):
 
 def straight_drive_loop(dist, turn = False):
     dist*=FLIP_MOTORS
-    global pointcloud
+    global particleCloud
 
     if turn: leftFlip = -1
     else: leftFlip = 1
@@ -90,7 +90,7 @@ def straight_drive_loop(dist, turn = False):
 
         if not turn:
             d = encs_to_dist((encsTravelledL + encsTravelledR)/2)
-            pointcloud = drawNewPointCloud(pointcloud, d, 0)
+            particleCloud = drawNewParticleCloud(particleCloud, d, 0)
 
 
         # adjust for drift
@@ -136,6 +136,6 @@ def straight_drive_loop(dist, turn = False):
     encR = BrickPi.Encoder[RIGHT] - encStartR
     angle = - encs_to_angle((encR - encL)/2)
     if (turn):
-        pointcloud = drawNewPointCloud(pointcloud, 0, angle)
+        particleCloud = drawNewParticleCloud(particleCloud, 0, angle)
     #print encL, encR
 

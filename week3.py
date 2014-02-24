@@ -17,10 +17,10 @@ def getRandomErrorAngle():
 def getRandomErrorTurn():
     return random.gauss(mu, sigmaTurn)
 
-def recalculatePointCloud(particles, d, dtheta):
+def recalculateParticleCloud(particles, d, dtheta):
     for i in range(len(particles)):
         x, y, theta, weight = particles[i]
-        print "position: " , x , y 
+        # print "position: " , x , y 
         if dtheta :
             theta = theta + dtheta + getRandomErrorTurn()
         else:
@@ -30,9 +30,9 @@ def recalculatePointCloud(particles, d, dtheta):
         particles[i] = (x, y, theta, weight)
     return particles
 
-def drawNewPointCloud(particles, d, dtheta):
-    print "drawing particles"
-    particles = recalculatePointCloud(particles, d, dtheta)
+def drawNewParticleCloud(particles, d, dtheta):
+    print "drawing particles: ", particles[0]
+    particles = recalculateParticleCloud(particles, d, dtheta)
     canvas.drawParticles(particles)
     return particles
 

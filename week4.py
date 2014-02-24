@@ -4,7 +4,7 @@ WAYPOINT_TOLERANCE = 2 #so the robot doesn't try to get infinitely nearer to the
 SONAR_SIGMA = 3.0 #TODO this needs a real value
 NUMBER_OF_PARTICLES = 100
 
-particleCloud = [(0,0,0,1/NUMBER_OF_PARTICLES) for j in range(NUMBER_OF_PARTICLES)]
+particleCloud = [(0,0,0,0.01) for j in range(NUMBER_OF_PARTICLES)]
 simpleWalls = [(0, True), (168, False), (84, True), (210, False), (168, True), (84, False), (210, True), (0, False)]
 
 #from conrad, not used yet
@@ -41,7 +41,7 @@ def resample():
         else:
             cumalativeWeights = cumalativeWeights[i-1] + particleCloud[i]
     
-    newparticleCloud = [0 for k in range(len)]
+    newParticleCloud = [0 for k in range(len)]
     for l in range(len):
         rnd = random.random()
         for m in range(len):
@@ -49,9 +49,9 @@ def resample():
                 x, y, theta, w = particleCloud[m]
                 break
         newParticle = (x, y, theta, 1 / len)
-        newparticleCloud[l] = newParticle
+        newParticleCloud[l] = newParticle
     
-    return newparticleCloud
+    return newParticleCloud
 
 def updateLikelihoods(z):
     weightTotal = 0
