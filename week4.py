@@ -23,10 +23,11 @@ point_map = {'O': (0,0), \
 
 def resetParticleCloud():
     print 'resetting particle cloud'
-    startx = 150
-    starty = 30
+    start_x = 150
+    start_y = 30
+    start_theta = 0
     global particleCloud 
-    particleCloud = [(startx,starty,0,0.01) for j in range(NUMBER_OF_PARTICLES)]
+    particleCloud = [(start_x,start_y,start_theta,0.01) for j in range(NUMBER_OF_PARTICLES)]
 
 
 def getMeanPosition():
@@ -79,7 +80,6 @@ def updateLikelihoods(z):
 
 def calculate_likelihood(x, y, theta, z):
     m = getExpectedDistance(x, y, theta)
-    print "x:", x, "| y:", y, "| theta:",theta, "| m:", m
     numerator = -((z-m) ** 2)
     denominator = 2 * (SONAR_SIGMA ** 2)
     power = numerator / denominator
@@ -120,6 +120,5 @@ def getExpectedDistance(x1, y1, theta):
 
         if in_front and in_range:
             distance = min(distance, math.sqrt((x2 - x1)**2 + (y2 - y1)**2))
-            print math.sqrt((x2 - x1)**2 + (y2 - y1)**2) 
     return distance
 
