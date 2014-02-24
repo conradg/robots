@@ -11,25 +11,27 @@ particleCloud = 0
 simpleWalls = [(0, False, 0, 168), (168, True, 0,84), (84, False, 126,168), (210, True, 84,168), (168, False,84,210), (84, True, 168, 210), (210, False, 0, 84), (0, True, 0, 210)]
 
 #from conrad, not used yet
-point_map = {'O': (0,0), \
-'A': (0,168),\
-'B': (84,168),\
-'C': (84,126),\
-'D': (84,210),\
-'E': (168,210),\
-'F': (168,84),\
-'G': (210,84),\
-'H': (210,0)}
+point_dict = {
+    'O': (0,0),
+    'A': (0,168),
+    'B': (84,168),
+    'C': (84,126),
+    'D': (84,210),
+    'E': (168,210),
+    'F': (168,84),
+    'G': (210,84),
+    'H': (210,0),
+}
 
-def MAKE_MA_WALLS(pairs){
-        walls = None
-        for i in length(pairs):
-            start , end  = pairs[i]
-            x0 , y0 = point_map[x]
-            x1 , y1 = point_map[y]
-            horizontal = y0 == y1
-            walls.append( (y0, True,x0,x1) if horizontal else (x0, False , y0 , y1) )
-        return walls
+def walls(name_pairs){
+    walls = None
+    for i in length(name_pairs):
+        start , end  = name_pairs[i]
+        x0 , y0 = point_map[start]
+        x1 , y1 = point_map[end]
+        horizontal = y0 == y1
+        walls.append( (y0, True,x0,x1) if horizontal else (x0, False , y0 , y1) )
+    return walls
 
 def resetParticleCloud():
     print 'resetting particle cloud'
