@@ -124,14 +124,14 @@ def getExpectedDistance(x1, y1, theta):
                 in_range = True
         in_front = False
 
-        if 0 <= theta and theta < math.pi / 2:
-            in_front = x1 < x2 and y1 < y2
-        elif math.pi / 2 <= theta and theta < math.pi:
-            in_front = x1 > x2 and y1 < y2
-        elif -1*math.pi <= theta and theta < -0.5 * math.pi:
+        if theta < -0.5 * math.pi:
             in_front = x1 > x2 and y1 > y2
-        elif -0.5  * math.pi <= theta and theta < 0:
+        elif theta < 0:
             in_front = x1 < x2 and y1 > y2
+        elif theta < math.pi / 2:
+            in_front = x1 < x2 and y1 < y2
+        elif theta < math.pi:
+            in_front = x1 > x2 and y1 < y2
 
         if in_front and in_range:
             distance = min(distance, math.sqrt((x2 - x1)**2 + (y2 - y1)**2))
