@@ -8,7 +8,7 @@ NUMBER_OF_PARTICLES = 100
 particleCloud = 0
 
 #simpleWalls format [start, horizontal, start, finish]
-simpleWalls = [(0, True, 0, 168), (168, False, 0,84), (84, True, 126,168), (210, False, 84,168), (168, True,84,210), (84, False, 168, 210), (210, True, 0, 84), (0, False, 0, 210)]
+simpleWalls = [(0, False, 0, 168), (168, True, 0,84), (84, False, 126,168), (210, True, 84,168), (168, False,84,210), (84, True, 168, 210), (210, False, 0, 84), (0, True, 0, 210)]
 
 #from conrad, not used yet
 point_map = {'O': (0,0), \
