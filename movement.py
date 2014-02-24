@@ -2,26 +2,36 @@ from BrickPi import *
 import math
 import random
 from setup import *
-from week4 import *
+import week4
 from week3 import *
 from particleDataStructures import *
 
 def goTo (xnew,ynew):
-    (x, y, theta) = getMeanPosition()
-
-    while not math.fabs(xnew - x) < WAYPOINT_TOLERANCE or not math.fabs(ynew - y) < WAYPOINT_TOLERANCE:
-        localise()
+    (x, y, theta) = week4.getMeanPosition()
+    localise()
+    
+    while not math.fabs(xnew - x) < week4.WAYPOINT_TOLERANCE or not math.fabs(ynew - y) < week4.WAYPOINT_TOLERANCE:    
+        
         xdiff = xnew - x
         ydiff = ynew - y
         angle  = math.atan2(ydiff,xdiff)
         anglediff = angle - theta
+            
+        print "theta", theta, "angle", angle
 
         # Modulo pi retaining sign
-        anglediff %= math.pi * (-1 if anglediff < 0 else 1)
-    
-        distance  = math.sqrt(xdiff**2 + ydiff**2) * 100 # *100 to convert to cm
-        turn_acw(-anglediff/(2*math.pi*360))
+        # anglediff %= math.pi * (-1 if anglediff < 0 else 1)
+        while anglediff>math.pi: anglediff-=2*math.pi
+        while anglediff<-math.pi: anglediff+=2*math.pi
+        
+        distance  = math.sqrt(xdiff**2 + ydiff**2) # *100 to convert to cm
+        turn_acw(180*anglediff/(math.pi))
         go(min(DIST_BEFORE_LOCO, distance))
+        
+        localise()
+        (x, y, theta) = week4.getMeanPosition()
+        print 'x', x, 'y', y
+       
 
 def localise():
 #assumes sensors already set up
@@ -29,8 +39,11 @@ def localise():
     z = 300
     if not result:
         z = BrickPi.Sensor[PORT_1] 
-    updateLikelihoods(z)
-    particlecloud = resample()
+    week4.updateLikelihoods(z)
+    canvas.drawParticles(week4.particleCloud)
+    print week4.particleCloud
+    time.sleep(2.0)
+    week4.particlecloud = week4.resample()
 
 def go(distance):
     straight_drive_loop(distance)
@@ -38,6 +51,8 @@ def go(distance):
 
 def turn_acw(deg):
     deg = deg*SLIPPING_MAGIC_NUMBER
+    if deg<5: return
+    
     BrickPiUpdateValues()
     dist_to_rotate = ROT_CIRCLE_CIRCUM*(deg/360.0)
     #if deg<0: print "Turning left"
@@ -90,7 +105,7 @@ def straight_drive_loop(dist, turn = False):
 
         if not turn:
             d = encs_to_dist((encsTravelledL + encsTravelledR)/2)
-            particleCloud = drawNewParticleCloud(particleCloud, d, 0)
+            week4.particleCloud = drawNewParticleCloud(week4.particleCloud, d, 0)
 
 
         # adjust for drift
@@ -134,8 +149,8 @@ def straight_drive_loop(dist, turn = False):
     BrickPiUpdateValues()
     encL = BrickPi.Encoder[LEFT] - encStartL
     encR = BrickPi.Encoder[RIGHT] - encStartR
-    angle = - encs_to_angle((encR - encL)/2)
+    angle = encs_to_angle((encR - encL)/2)
     if (turn):
-        particleCloud = drawNewParticleCloud(particleCloud, 0, angle)
+        week4.particleCloud = drawNewParticleCloud(week4.particleCloud, 0, angle)
     #print encL, encR
 

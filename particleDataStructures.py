@@ -93,11 +93,8 @@ mymap.add_wall((168,210,168,84));   # e
 mymap.add_wall((168,84,210,84));    # f
 mymap.add_wall((210,84,210,0));     # g
 mymap.add_wall((210,0,0,0));        # h
-<<<<<<< HEAD
-mymap.draw();  
-=======
+
 #mymap.draw();
->>>>>>> 5bffb1a45a14cb4f6290626bfb0bdf2eb065f977
 
 #particles = Particles();
 
