@@ -1,4 +1,4 @@
-#!/usr/bin/env python 
+#!/usr/bin/env python
 
 # Some suitable functions and data structures for drawing a map and particles
 
@@ -64,12 +64,12 @@ class Map:
 # Simple Particles set
 class Particles:
     def __init__(self):
-        self.n = 10;    
+        self.n = 10;
         self.data = [];
 
     def update(self):
         self.data = [(calcX(), calcY(), calcTheta(), calcW()) for i in range(self.n)];
-    
+
     def draw(self):
         canvas.drawParticles(self.data);
 
@@ -93,7 +93,7 @@ mymap.add_wall((168,210,168,84));   # e
 mymap.add_wall((168,84,210,84));    # f
 mymap.add_wall((210,84,210,0));     # g
 mymap.add_wall((210,0,0,0));        # h
-#mymap.draw();  
+#mymap.draw();
 
 #particles = Particles();
 

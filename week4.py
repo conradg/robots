@@ -8,7 +8,7 @@ particleCloud = [(0,0,0,1/NUMBER_OF_PARTICLES) for j in range(NUMBER_OF_PARTICLE
 simpleWalls = [(0, True), (168, False), (84, True), (210, False), (168, True), (84, False), (210, True), (0, False)]
 
 #from conrad, not used yet
-map = {'O': (0,0), \
+point_map = {'O': (0,0), \
 'A': (0,168),\
 'B': (84,168),\
 'C': (84,126),\
@@ -40,7 +40,7 @@ def resample():
             cumalativeWeights = particecloud[0]
         else:
             cumalativeWeights = cumalativeWeights[i-1] + particleCloud[i]
-    
+
     newparticleCloud = [0 for k in range(len)]
     for l in range(len):
         rnd = random.random()
@@ -50,7 +50,7 @@ def resample():
                 break
         newParticle = (x, y, theta, 1 / len)
         newparticleCloud[l] = newParticle
-    
+
     return newparticleCloud
 
 def updateLikelihoods(z):
@@ -60,7 +60,7 @@ def updateLikelihoods(z):
         likelihood = calculate_likelihood(x, y, theta, z)
         particleCloud[i] = (x, y, theta, likelihood)
         weightTotal += likelihood
-    
+
     for i in range(len(particleCloud)):
         x, y, theta, w = particleCloud[i]
         w /= weightTotal
@@ -72,8 +72,8 @@ def calculate_likelihood(x, y, theta, z):
     denominator = 2 * (SONAR_SIGMA ** 2)
     power = numerator / denominator
     probability = -math.exp(power)
-    likelihood = 0.005 + probability 
-    #TODO maybe the likelihood magic number should be a global	
+    likelihood = 0.005 + probability
+    #TODO maybe the likelihood magic number should be a global
     return likelihood
 
 def getExpectedDistance(x1, y1, theta):
@@ -85,15 +85,15 @@ def getExpectedDistance(x1, y1, theta):
         const, horizontal = simpleWalls[i]
         if horizontal:
             if theta == 0 or theta == math.pi: continue
-            y2 = const 
+            y2 = const
             x2 = (1 / math.tan(theta)) * (y2 - y1) - x1
         else:
             if theta == math.pi / 2 or theta == 1.5 * math.pi: continue
             x2 = const
             y2 = math.tan(theta) * (x2 - x1) - y1
-    
+
         infront = False
-    
+
         if 0 <= theta and theta < math.pi / 2:
             infront = x1 < x2 and y1 < y2
         elif math.pi / 2 <= theta and theta < math.pi:
