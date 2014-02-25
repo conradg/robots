@@ -1,16 +1,4 @@
 from BrickPi import *
-iest = [
-    (2,6),
-    (3,4),
-    (3,8),
-    (4,7),
-    (6,2),
-    (6,4),
-    (7,3),
-    (7,4),
-    (8,5),
-    (7,6)
-]
 import math
 import random
 from setup import *
