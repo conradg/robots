@@ -5,11 +5,12 @@
 import random
 import os
 
+
 # Location signature class: stores a signature characterizing one location
 class LocationSignature:
     def __init__(self, no_bins = 360):
         self.sig = [0] * no_bins
-        
+
     def print_signature(self):
         for i in range(len(self.sig)):
             print self.sig[i]
@@ -19,13 +20,13 @@ class SignatureContainer():
     def __init__(self, size = 5):
         self.size      = size; # max number of signatures that can be stored
         self.filenames = [];
-        
-        # Fills the filenames variable with names like loc_%%.dat 
-        # where %% are 2 digits (00, 01, 02...) indicating the location number. 
+
+        # Fills the filenames variable with names like loc_%%.dat
+        # where %% are 2 digits (00, 01, 02...) indicating the location number.
         for i in range(self.size):
             self.filenames.append('loc_{0:02d}.dat'.format(i))
 
-    # Get the index of a filename for the new signature. If all filenames are 
+    # Get the index of a filename for the new signature. If all filenames are
     # used, it returns -1;
     def get_free_index(self):
         n = 0
@@ -33,26 +34,26 @@ class SignatureContainer():
             if (os.path.isfile(self.filenames[n]) == False):
                 break
             n += 1
-            
+
         if (n >= self.size):
             return -1;
-        else:    
+        else:
             return n;
- 
+
     # Delete all loc_%%.dat files
     def delete_loc_files(self):
         print "STATUS:  All signature files removed."
         for n in range(self.size):
             if os.path.isfile(self.filenames[n]):
                 os.remove(self.filenames[n])
-            
+
     # Writes the signature to the file identified by index (e.g, if index is 1
     # it will be file loc_01.dat). If file already exists, it will be replaced.
     def save(self, signature, index):
         filename = self.filenames[index]
         if os.path.isfile(filename):
             os.remove(filename)
-            
+
         f = open(filename, 'w')
 
         for i in range(len(signature.sig)):
@@ -74,9 +75,9 @@ class SignatureContainer():
             f.close();
         else:
             print "WARNING: Signature does not exist."
-        
+
         return ls
-        
+
 # FILL IN: spin robot or sonar to capture a signature and store it in ls
 def characterize_location(ls):
     print "TODO:    You should implement the function that captures a signature."
@@ -89,7 +90,7 @@ def compare_signatures(ls1, ls2):
     print "TODO:    You should implement the function that compares two signatures."
     return dist
 
-# This function characterizes the current location, and stores the obtained 
+# This function characterizes the current location, and stores the obtained
 # signature into the next available file.
 def learn_location():
     ls = LocationSignature()
@@ -100,7 +101,7 @@ def learn_location():
         print "No signature file is available. NOTHING NEW will be learned and stored."
         print "Please remove some loc_%%.dat files.\n"
         return
-    
+
     signatures.save(ls,idx)
     print "STATUS:  Location " + str(idx) + " learned and saved."
 
@@ -123,7 +124,7 @@ def recognize_location():
         dist    = compare_signatures(ls_obs, ls_read)
 
 # Prior to starting learning the locations, it should delete files from previous
-# learning either manually or by calling signatures.delete_loc_files(). 
+# learning either manually or by calling signatures.delete_loc_files().
 # Then, either learn a location, until all the locations are learned, or try to
 # recognize one of them, if locations have already been learned.
 
