@@ -67,8 +67,8 @@ def turn_acw(deg):
 
     BrickPiUpdateValues()
     dist_to_rotate = ROT_CIRCLE_CIRCUM*(deg/360.0)
-    if deg<0: print "Turning right"
-    else: print "Turning left"
+    #if deg<0: print "Turning right"
+    #else: print "Turning left"
 
     straight_drive_loop(dist_to_rotate, True)
     stopMotors()
