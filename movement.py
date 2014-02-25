@@ -6,26 +6,27 @@ import week4
 from week3 import *
 from particleDataStructures import *
 
-def goTo (xnew,ynew):
+
+def goTo(xnew, ynew):
     degTol = 3/180*math.pi
     localise()
     x, y, theta = week4.getMeanPosition()
     xdiff = xnew - x
     ydiff = ynew - y
-    distance  = math.sqrt(xdiff**2 + ydiff**2) # *100 to convert to cm
+    distance = math.sqrt(xdiff**2 + ydiff**2)  # *100 to convert to cm
 
-    #while not math.fabs(xnew - x) < week4.WAYPOINT_TOLERANCE or not math.fabs(ynew - y) < week4.WAYPOINT_TOLERANCE:
     while distance > 10:
-        angle  = math.atan2(ydiff,xdiff)
+        angle = math.atan2(ydiff, xdiff)
         anglediff = angle - theta
         print "theta", theta, "angle", angle
 
+        while anglediff <= -math.pi:
+            anglediff += 2 * math.pi
+        while anglediff > math.pi:
+            anglediff -= 2 * math.pi
 
-
-        while anglediff <= -math.pi : anglediff += 2 * math.pi;
-        while anglediff > math.pi : anglediff -= 2 * math.pi;
-
-        if math.fabs(anglediff) < degTol: anglediff = 0
+        if math.fabs(anglediff) < degTol:
+            anglediff = 0
 
         turn_acw(180*anglediff/(math.pi))
         next_hop_dist = min(DIST_BEFORE_LOCO, distance)
@@ -36,7 +37,7 @@ def goTo (xnew,ynew):
         x, y, theta = week4.getMeanPosition()
         xdiff = xnew - x
         ydiff = ynew - y
-        distance  = math.sqrt(xdiff**2 + ydiff**2)
+        distance = math.sqrt(xdiff**2 + ydiff**2)
         print 'x', x, 'y', y
 
     print "WAYPOINT REACHED ", x, y
@@ -63,7 +64,8 @@ def go(distance):
 
 def turn_acw(deg):
     deg = deg*SLIPPING_MAGIC_NUMBER
-    if math.fabs(deg) < 5: return
+    if math.fabs(deg) < 5:
+        return
 
     BrickPiUpdateValues()
     dist_to_rotate = ROT_CIRCLE_CIRCUM*(deg/360.0)
@@ -73,31 +75,34 @@ def turn_acw(deg):
     straight_drive_loop(dist_to_rotate, True)
     stopMotors()
 
-def straight_drive_loop(dist, turn = False):
-    dist*=FLIP_MOTORS
+
+def straight_drive_loop(dist, turn=False):
+    dist *= FLIP_MOTORS
     global particleCloud
 
-    if turn: leftFlip = -1
-    else: leftFlip = 1
+    if turn:
+        leftFlip = -1
+    else:
+        leftFlip = 1
     driftMode = 0
 
-
-    if dist > 0 : forwardFlip = 1
-    else : forwardFlip = -1
-
+    if dist > 0:
+        forwardFlip = 1
+    else:
+        forwardFlip = -1
 
     distEncs = dist_to_enc(dist)
 
     BrickPiUpdateValues()
     encStartL = BrickPi.Encoder[LEFT]
     encStartR = BrickPi.Encoder[RIGHT]
-    encL = encStartL #0
-    encR = encStartR #0
+    encL = encStartL  # 0
+    encR = encStartR  # 0
     targetSpeedMax = ROTATION_SPEED
     targetSpeed = targetSpeedMax
     encLTarget = encStartL + leftFlip * (distEncs-STOP_TOLERANCE*forwardFlip)
-    encRTarget = encStartR +            (distEncs-STOP_TOLERANCE*forwardFlip)
-    increasing = encLTarget>encL #May not work on small enc values
+    encRTarget = encStartR + (distEncs-STOP_TOLERANCE*forwardFlip)
+    increasing = encLTarget > encL  # May not work on small enc values
     power_mult_orig = 1.1
     power_mult_cap = 1.5
     power_mult = power_mult_orig
@@ -107,10 +112,10 @@ def straight_drive_loop(dist, turn = False):
         # get distance travelled
         BrickPiUpdateValues()
 
-        encsTravelledL = BrickPi.Encoder[LEFT] -  encL
+        encsTravelledL = BrickPi.Encoder[LEFT] - encL
         encsTravelledR = BrickPi.Encoder[RIGHT] - encR
 
-        #update previous enc value
+        # update previous enc value
         encL = BrickPi.Encoder[LEFT]
         encR = BrickPi.Encoder[RIGHT]
 
@@ -118,36 +123,36 @@ def straight_drive_loop(dist, turn = False):
             d = encs_to_dist((encsTravelledL + encsTravelledR)/2)
             week4.particleCloud = drawNewParticleCloud(week4.particleCloud, d, 0)
 
-
         # adjust for drift
         encLRel = math.fabs(encL-encStartL)
         encRRel = math.fabs(encR-encStartR)
 
         targetSpeed = min((math.fabs(distEncs) - encRRel)/400 + min_speed, targetSpeedMax) * forwardFlip
 
-
-        if math.fabs(encLRel-encRRel) > PATH_THRESHHOLD : #if we get off track, increase the motorSpeed of the slower side to compensate
-            if encLRel > encRRel :
-                if driftMode!=1: power_mult=power_mult_orig
-                driftMode=1
+        if math.fabs(encLRel-encRRel) > PATH_THRESHHOLD:
+            # if we get off track, increase the motorSpeed of the slower side to compensate
+            if encLRel > encRRel:
+                if driftMode != 1:
+                    power_mult = power_mult_orig
+                driftMode = 1
                 setMotorSpeed(targetSpeed*power_mult, RIGHT)
                 setMotorSpeed(targetSpeed*leftFlip, LEFT)
 
-            else :
-                if driftMode!=-1: power_mult=power_mult_orig
-                driftMode=-1
+            else:
+                if driftMode != -1:
+                    power_mult = power_mult_orig
+                driftMode = -1
                 setMotorSpeed(targetSpeed*power_mult*leftFlip, LEFT)
                 setMotorSpeed(targetSpeed, RIGHT)
 
-            if power_mult < power_mult_cap: power_mult += 0.03
+            if power_mult < power_mult_cap:
+                power_mult += 0.03
 
-        else : #if we get back on track, reset the two speeds to the target speed
-            driftMode=0
+        else:  # if we get back on track, reset the two speeds to the target speed
+            driftMode = 0
             setMotorSpeed(targetSpeed*leftFlip, LEFT)
             setMotorSpeed(targetSpeed, RIGHT)
             power_mult = power_mult_orig
-
-
 
         # break conditions
         if increasing and encL >= encLTarget:
@@ -164,4 +169,3 @@ def straight_drive_loop(dist, turn = False):
     if (turn):
         week4.particleCloud = drawNewParticleCloud(week4.particleCloud, 0, angle)
     #print encL, encR
-
