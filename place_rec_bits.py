@@ -4,6 +4,7 @@
 
 import random
 import os
+import movement
 
 
 # Location signature class: stores a signature characterizing one location
@@ -82,15 +83,17 @@ class SignatureContainer():
 
 # FILL IN: spin robot or sonar to capture a signature and store it in ls
 def characterize_location(ls):
-    print "TODO:    You should implement the function that captures a signature."
-    for i in range(len(ls.sig)):
-        ls.sig[i] = random.randint(0, 255)
+    anglediff = 20
+    for angle in range(0, len(ls.sig), anglediff):
+        ls.sig[angle] = movement.sonar_reading()
+        movement.turn_acw(-angle)
 
 
 # FILL IN: compare two signatures
 def compare_signatures(ls1, ls2):
     dist = 0
-    print "TODO:    You should implement the function that compares two signatures."
+    for i in range(len(ls1)):
+        dist += (ls1[i] - ls2[i]) ** 2
     return dist
 
 

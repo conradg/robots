@@ -44,13 +44,17 @@ def goTo(xnew, ynew):
     time.sleep(2.0)
 
 
-def localise():
-#assumes sensors already set up
+def sonar_reading():
     result = BrickPiUpdateValues()
-    z = 210
+    z = 200
     if not result:
         z = BrickPi.Sensor[PORT_1]
-    print z
+    return z
+
+
+def localise():
+#assumes sensors already set up
+    z = sonar_reading()
     week4.updateLikelihoods(z)
     canvas.drawParticles(week4.particleCloud)
     time.sleep(.5)
