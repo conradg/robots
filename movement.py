@@ -43,6 +43,7 @@ def goTo (xnew,ynew):
 
 def localise():
 #assumes sensors already set up
+    global week4.particleCloud
     result = BrickPiUpdateValues()
     z = 300
     if not result:
@@ -52,7 +53,7 @@ def localise():
     canvas.drawParticles(week4.particleCloud)
     #print week4.particleCloud
     #time.sleep(2.0)
-    week4.particlecloud = week4.resample()
+    week4.particleCloud = week4.resample()
 
 def go(distance):
     straight_drive_loop(distance)
