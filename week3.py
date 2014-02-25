@@ -20,9 +20,9 @@ def getRandomErrorTurn():
 def recalculateParticleCloud(particles, d, dtheta):
     for i in range(len(particles)):
         x, y, theta, weight = particles[i]
-        # print "position: " , x , y 
+        # print "position: " , x , y
         if not (dtheta==0) :
-            print dtheta
+            #print dtheta
             theta = theta + dtheta + getRandomErrorTurn()
         else:
             distanceError = getRandomErrorDist()

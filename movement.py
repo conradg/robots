@@ -20,10 +20,17 @@ def goTo (xnew,ynew):
         anglediff = angle - theta
         print "theta", theta, "angle", angle
 
+
+
+        print "adiffpre", anglediff
         while anglediff <= -math.pi : anglediff += 2 * math.pi;
         while anglediff > math.pi : anglediff -= 2 * math.pi;
 
-        if anglediff < degTol: anglediff = 0
+        print "adiffpost", anglediff
+
+        if math.fabs(anglediff) < degTol: anglediff = 0
+
+        print "adiffpostpost", anglediff
 
         turn_acw(180*anglediff/(math.pi))
         next_hop_dist = min(DIST_BEFORE_LOCO, distance)
@@ -50,7 +57,7 @@ def localise():
     print z
     week4.updateLikelihoods(z)
     canvas.drawParticles(week4.particleCloud)
-    print week4.particleCloud
+   #print week4.particleCloud
     time.sleep(.5)
     week4.particlecloud = week4.resample()
 
