@@ -22,15 +22,10 @@ def goTo (xnew,ynew):
 
 
 
-        print "adiffpre", anglediff
         while anglediff <= -math.pi : anglediff += 2 * math.pi;
         while anglediff > math.pi : anglediff -= 2 * math.pi;
 
-        print "adiffpost", anglediff
-
         if math.fabs(anglediff) < degTol: anglediff = 0
-
-        print "adiffpostpost", anglediff
 
         turn_acw(180*anglediff/(math.pi))
         next_hop_dist = min(DIST_BEFORE_LOCO, distance)
@@ -69,12 +64,12 @@ def go(distance):
 
 def turn_acw(deg):
     deg = deg*SLIPPING_MAGIC_NUMBER
-    if deg < 5: return
+    if math.fabs(deg) < 5: return
 
     BrickPiUpdateValues()
     dist_to_rotate = ROT_CIRCLE_CIRCUM*(deg/360.0)
-    #if deg<0: print "Turning left"
-    #else: print "Turning right"
+    if deg<0: print "Turning right"
+    else: print "Turning left"
 
     straight_drive_loop(dist_to_rotate, True)
     stopMotors()
