@@ -48,6 +48,7 @@ def getMeanPosition():
 
 
 def resample():
+    global particleCloud
     length = len(particleCloud)
     cumalativeWeights = [0 for j in range(length)]
     for i in range(length):
@@ -56,19 +57,19 @@ def resample():
         else:
             cumalativeWeights[i] = cumalativeWeights[i-1] + particleCloud[i][3]
 
-    newParticleCloud = [0 for k in range(length)]
+    newParticleCloud = [(0,0,0,0) for k in range(length)]
 
     for l in range(length):
         rnd = random.random()
         for m in range(length):
-            if(rnd < cumalativeWeights[m]):
+            x, y, theta , w = (0,0,0,0)
+            if(rnd <= cumalativeWeights[m]):
                 x, y, theta, w = particleCloud[m]
                 break
-        newParticle = (x, y, theta, 1 / length)
-
+        newParticle = (x, y, theta, 1.0 / length)
         newParticleCloud[l] = newParticle
 
-    return newParticleCloud
+    particleCloud = newParticleCloud
 
 
 def updateLikelihoods(z):
