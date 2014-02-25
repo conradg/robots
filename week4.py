@@ -2,7 +2,7 @@ import math
 import random
 
 WAYPOINT_TOLERANCE = 4 #so the robot doesn't try to get infinitely nearer to the waypoint
-SONAR_SIGMA = 0.5 #TODO this needs a real value
+SONAR_SIGMA = 3 #TODO this needs a real value
 K = 0.005
 NUMBER_OF_PARTICLES = 100
 particleCloud = 0

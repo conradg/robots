@@ -8,7 +8,7 @@ from particleDataStructures import *
 #############################
 #########Constants###########
 #############################
-SPEED_TO_MOTO_MAGIC_NUMBER = 200 #voltage?
+SPEED_TO_MOTO_MAGIC_NUMBER = 100 #voltage?
 CARPET_SLIP = 1.08
 TABLE_SLIP = 1
 SLIPPING_MAGIC_NUMBER = CARPET_SLIP
