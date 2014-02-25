@@ -5,8 +5,8 @@ from particleDataStructures import *
 
 mu = 0 # mean (no error)
 sigmaDist = 0.5 #standard dev (possible error) for distance
-sigmaAngle = 0.05 #standard dev (possible error) for angle on forward movement
-sigmaTurn = math.pi/180 #standard dev (possible error) for angle on turn
+sigmaAngle = 0.005 #standard dev (possible error) for angle on forward movement
+sigmaTurn = math.pi/360 #standard dev (possible error) for angle on turn
 
 def getRandomErrorDist():
     return random.gauss(mu, sigmaDist)
@@ -20,9 +20,9 @@ def getRandomErrorTurn():
 def recalculateParticleCloud(particles, d, dtheta):
     for i in range(len(particles)):
         x, y, theta, weight = particles[i]
-        # print "position: " , x , y 
+        # print "position: " , x , y
         if not (dtheta==0) :
-            print dtheta
+            #print dtheta
             theta = theta + dtheta + getRandomErrorTurn()
         else:
             distanceError = getRandomErrorDist()

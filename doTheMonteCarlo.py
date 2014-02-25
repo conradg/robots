@@ -6,18 +6,17 @@ import movement
 
 def doTheMonteCarlo():
     week4.resetParticleCloud()
-    #print "at the start = " , week4.particleCloud
-    '''goTo(84, 30)
-    goTo(180, 30)
-    goTo(180, 54)
-    goTo(126, 54)
-    goTo(126, 168)
-    goTo(126, 126)
-    goTo(30, 54)
-    goTo(84, 54)
-    goTo(84, 30)'''
-    movement.goTo(30,100)
-    movement.goTo(30,30)
+
+    movement.goTo(84, 30)
+    movement.goTo(180, 30)
+    movement.goTo(180, 54)
+    movement.goTo(126, 54)
+    movement.goTo(126, 168)
+    movement.goTo(126, 126)
+    movement.goTo(30, 54)
+    movement.goTo(84, 54)
+    movement.goTo(84, 30)
+
 
 
 doTheMonteCarlo()
