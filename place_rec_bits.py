@@ -132,6 +132,6 @@ signatures = SignatureContainer(5);
 #signatures.delete_loc_files()
 
 learn_location();
-recognize_location();
+#recognize_location();
 
 
