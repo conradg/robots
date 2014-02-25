@@ -8,18 +8,19 @@ import os
 
 # Location signature class: stores a signature characterizing one location
 class LocationSignature:
-    def __init__(self, no_bins = 360):
+    def __init__(self, no_bins=360):
         self.sig = [0] * no_bins
 
     def print_signature(self):
         for i in range(len(self.sig)):
             print self.sig[i]
 
+
 # --------------------- File management class ---------------
 class SignatureContainer():
-    def __init__(self, size = 5):
-        self.size      = size; # max number of signatures that can be stored
-        self.filenames = [];
+    def __init__(self, size=5):
+        self.size = size  # max number of signatures that can be stored
+        self.filenames = []
 
         # Fills the filenames variable with names like loc_%%.dat
         # where %% are 2 digits (00, 01, 02...) indicating the location number.
@@ -31,14 +32,14 @@ class SignatureContainer():
     def get_free_index(self):
         n = 0
         while n < self.size:
-            if (os.path.isfile(self.filenames[n]) == False):
+            if (not os.path.isfile(self.filenames[n])):
                 break
             n += 1
 
         if (n >= self.size):
-            return -1;
+            return -1
         else:
-            return n;
+            return n
 
     # Delete all loc_%%.dat files
     def delete_loc_files(self):
@@ -59,7 +60,7 @@ class SignatureContainer():
         for i in range(len(signature.sig)):
             s = str(signature.sig[i]) + "\n"
             f.write(s)
-        f.close();
+        f.close()
 
     # Read signature file identified by index. If the file doesn't exist
     # it returns an empty signature.
@@ -72,11 +73,12 @@ class SignatureContainer():
                 s = f.readline()
                 if (s != ''):
                     ls.sig[i] = int(s)
-            f.close();
+            f.close()
         else:
             print "WARNING: Signature does not exist."
 
         return ls
+
 
 # FILL IN: spin robot or sonar to capture a signature and store it in ls
 def characterize_location(ls):
@@ -84,26 +86,29 @@ def characterize_location(ls):
     for i in range(len(ls.sig)):
         ls.sig[i] = random.randint(0, 255)
 
+
 # FILL IN: compare two signatures
 def compare_signatures(ls1, ls2):
     dist = 0
     print "TODO:    You should implement the function that compares two signatures."
     return dist
 
+
 # This function characterizes the current location, and stores the obtained
 # signature into the next available file.
 def learn_location():
     ls = LocationSignature()
     characterize_location(ls)
-    idx = signatures.get_free_index();
-    if (idx == -1): # run out of signature files
+    idx = signatures.get_free_index()
+    if (idx == -1):  # run out of signature files
         print "\nWARNING:"
         print "No signature file is available. NOTHING NEW will be learned and stored."
         print "Please remove some loc_%%.dat files.\n"
         return
 
-    signatures.save(ls,idx)
+    signatures.save(ls, idx)
     print "STATUS:  Location " + str(idx) + " learned and saved."
+
 
 # This function tries to recognize the current location.
 # 1.   Characterize current location
@@ -114,24 +119,22 @@ def learn_location():
 #      actual characterization is the smallest.
 # 4.   Display the index of the recognized location on the screen
 def recognize_location():
-    ls_obs = LocationSignature();
-    characterize_location(ls_obs);
+    ls_obs = LocationSignature()
+    characterize_location(ls_obs)
 
     # FILL IN: COMPARE ls_read with ls_obs and find the best match
     for idx in range(signatures.size):
         print "STATUS:  Comparing signature " + str(idx) + " with the observed signature."
-        ls_read = signatures.read(idx);
-        dist    = compare_signatures(ls_obs, ls_read)
+        ls_read = signatures.read(idx)
+        dist = compare_signatures(ls_obs, ls_read)
 
 # Prior to starting learning the locations, it should delete files from previous
 # learning either manually or by calling signatures.delete_loc_files().
 # Then, either learn a location, until all the locations are learned, or try to
 # recognize one of them, if locations have already been learned.
 
-signatures = SignatureContainer(5);
+signatures = SignatureContainer(5)
 #signatures.delete_loc_files()
 
-learn_location();
+learn_location()
 #recognize_location();
-
-
