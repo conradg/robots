@@ -45,6 +45,7 @@ def goTo (xnew,ynew):
 
 def localise():
 #assumes sensors already set up
+    global week4.particleCloud
     result = BrickPiUpdateValues()
     z = 210
     if not result:
@@ -52,7 +53,6 @@ def localise():
     print z
     week4.updateLikelihoods(z)
     canvas.drawParticles(week4.particleCloud)
-   #print week4.particleCloud
     time.sleep(.5)
     week4.particlecloud = week4.resample()
 

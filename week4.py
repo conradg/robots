@@ -92,7 +92,6 @@ def calculate_likelihood(x, y, theta, z):
     power = numerator / denominator
     probability = math.exp(power)
     likelihood = K + probability
-    #TODO maybe the likelihood magic number should be a global
     return likelihood
 
 
