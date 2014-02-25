@@ -1,7 +1,7 @@
 import math
 import random
 
-WAYPOINT_TOLERANCE = 2 #so the robot doesn't try to get infinitely nearer to the waypoint
+WAYPOINT_TOLERANCE = 4 #so the robot doesn't try to get infinitely nearer to the waypoint
 SONAR_SIGMA = 0.5 #TODO this needs a real value
 K = 0.005
 NUMBER_OF_PARTICLES = 100
@@ -23,23 +23,16 @@ point_dict = {
     'H': (210,0),
 }
 
-def walls(name_pairs){
-    walls = None
-    for i in length(name_pairs):
-        start , end  = name_pairs[i]
-        x0 , y0 = point_map[start]
-        x1 , y1 = point_map[end]
-        horizontal = y0 == y1
-        walls.append( (y0, True,x0,x1) if horizontal else (x0, False , y0 , y1) )
-    return walls
-
 def resetParticleCloud():
     print 'resetting particle cloud'
-    start_x = 150
-    start_y = 30
-    start_theta = 0
+    start_x = 30#150 #use 30
+    start_y = 30 #use 30
+    start_theta = 0 #use 0
     global particleCloud
-    particleCloud = [(start_x,start_y,start_theta,0.01) for j in range(NUMBER_OF_PARTICLES)]
+    particleCloud = [(start_x + random.gauss(0,3), start_y + random.gauss(0, 3),start_theta,0.01) for j in range(NUMBER_OF_PARTICLES)]
+    #for k in range(1, 10):
+        #for j in range(1,10):
+            #particleCloud[(k-1)*10 + (j-1)] = (j * 19, k * 19, start_theta, 0.01)
 
 
 def getMeanPosition():
@@ -135,6 +128,6 @@ def getExpectedDistance(x1, y1, theta):
 
         if in_front and in_range:
             distance = min(distance, math.sqrt((x2 - x1)**2 + (y2 - y1)**2))
-            print math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
+ #           print math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
     return distance
 

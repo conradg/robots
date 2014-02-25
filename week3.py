@@ -4,8 +4,8 @@ import math
 from particleDataStructures import *
 
 mu = 0 # mean (no error)
-sigmaDist = 1 #standard dev (possible error) for distance
-sigmaAngle = 0.05 #standard dev (possible error) for angle on forward movement
+sigmaDist = 0.5 #standard dev (possible error) for distance
+sigmaAngle = 0.005 #standard dev (possible error) for angle on forward movement
 sigmaTurn = math.pi/360 #standard dev (possible error) for angle on turn
 
 def getRandomErrorDist():

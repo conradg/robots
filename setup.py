@@ -25,7 +25,7 @@ PATH_THRESHHOLD = 2  #determines how far the bot can stray from it's path before
 ROTATION_TIME = 10 # seconds per rotation
 ROTATION_SPEED = DEFAULT_SPEED #ROT_CIRCLE_CIRCUM/ROTATION_TIME
 STOP_TOLERANCE = 0
-DIST_BEFORE_LOCO = 20 #the distance to travel before localising positions
+DIST_BEFORE_LOCO = 14 #the distance to travel before localising positions
                       #20 is suggested in the spec but may be too short for our tolerances?
 ############################
 ############################
