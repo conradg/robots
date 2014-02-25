@@ -34,9 +34,9 @@ def goTo (xnew,ynew):
         x, y, theta = week4.getMeanPosition()
         xdiff = xnew - x
         ydiff = ynew - y
-        distance  = math.sqrt(xdiff**2 + ydiff**2) 
+        distance  = math.sqrt(xdiff**2 + ydiff**2)
         print 'x', x, 'y', y
-    
+
     print "WAYPOINT REACHED ", x, y
     time.sleep(2.0)
 
@@ -44,19 +44,21 @@ def goTo (xnew,ynew):
 def localise():
 #assumes sensors already set up
     result = BrickPiUpdateValues()
-    z = 300
+    z = 210
     if not result:
         z = BrickPi.Sensor[PORT_1]
     print z
     week4.updateLikelihoods(z)
     canvas.drawParticles(week4.particleCloud)
-    #print week4.particleCloud
-    #time.sleep(2.0)
+    print week4.particleCloud
+    time.sleep(.5)
     week4.particlecloud = week4.resample()
+
 
 def go(distance):
     straight_drive_loop(distance)
     stopMotors()
+
 
 def turn_acw(deg):
     deg = deg*SLIPPING_MAGIC_NUMBER
@@ -68,7 +70,6 @@ def turn_acw(deg):
     #else: print "Turning right"
 
     straight_drive_loop(dist_to_rotate, True)
-
     stopMotors()
 
 def straight_drive_loop(dist, turn = False):
