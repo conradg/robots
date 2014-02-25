@@ -23,9 +23,9 @@ point_map = {'O': (0,0), \
 
 def resetParticleCloud():
     print 'resetting particle cloud'
-    start_x = 150
-    start_y = 30
-    start_theta = 0
+    start_x = 100
+    start_y = 100
+    start_theta = math.pi
     global particleCloud 
     particleCloud = [(start_x,start_y,start_theta,0.01) for j in range(NUMBER_OF_PARTICLES)]
 

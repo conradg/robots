@@ -16,7 +16,8 @@ def doTheMonteCarlo():
     goTo(30, 54)
     goTo(84, 54)
     goTo(84, 30)'''
-    movement.goTo(180,30)
+    movement.goTo(30,100)
+    movement.goTo(30,30)
 
 
 doTheMonteCarlo()

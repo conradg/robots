@@ -4,9 +4,9 @@ import math
 from particleDataStructures import *
 
 mu = 0 # mean (no error)
-sigmaDist = 1 #standard dev (possible error) for distance
+sigmaDist = 0.5 #standard dev (possible error) for distance
 sigmaAngle = 0.05 #standard dev (possible error) for angle on forward movement
-sigmaTurn = math.pi/360 #standard dev (possible error) for angle on turn
+sigmaTurn = math.pi/180 #standard dev (possible error) for angle on turn
 
 def getRandomErrorDist():
     return random.gauss(mu, sigmaDist)
