@@ -5,18 +5,19 @@ type Matrix a = (
                  (a, a)  
                 ,(a, a)
                 ) 
+main :: IO ()
 main = do 
         args <- getArgs
-        let contents = case args of
+        let cs = case args of
                         [x] -> readFile x 
-                        _   -> hGetContents stdin 
-        file <- contents
+                        _   -> getContents 
+        file <- cs
         let contents = map (\x -> case words x of 
-                                    a:b:xs -> p (read a) (read b)
+                                    a:b:_ -> p (read a) (read b)
                                     _     -> error "invalid input format") $ lines file
         let (row1, row2) = covarianceMatrix contents 
-        putStrLn $ show row1
-        putStrLn $ show row2
+        print row1
+        print row2
 
 
 matrix :: a -> a -> a -> a -> Matrix a
@@ -26,14 +27,16 @@ covarianceMatrix :: [(Double,Double)] -> Matrix Double
 covarianceMatrix coords = matrix tl tr bl br
     where
     len = fromIntegral $ length coords
-    avg xory cs = (sum (map xory cs)) / len
+    avg xory cs = sum (map xory cs) / len
     avgx = avg fst coords
     avgy = avg snd coords
-    tl = (sum (map (\a -> ((fst a) - avgx)**2) coords)) /len
-    br = (sum (map (\a -> ((snd a) - avgy)**2) coords)) /len
-    tr = (sum (map (\a -> ((snd a) - avgy) * ((fst a) - avgx)) coords)) /len
+    tl = sum (map (\a -> (fst a - avgx)**2) coords) /len
+    br = sum (map (\a -> (snd a - avgy)**2) coords) /len
+    tr = sum (map (\a -> (snd a - avgy) * (fst a - avgx)) coords) /len
     bl = tr
 
 point :: Double -> Double -> (Double,Double)
 point a b = (a,b)
+
+p :: Double -> Double -> (Double, Double)
 p = point
