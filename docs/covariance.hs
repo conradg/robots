@@ -1,12 +1,15 @@
 import System.IO
+import Control.Arrow 
 import System.Environment
 
 type Matrix a = (
                  (a, a)  
                 ,(a, a)
                 ) 
+
 main :: IO ()
 main = do 
+        print $ show (mat' 1 2 3 4)
         args <- getArgs
         let cs = case args of
                         [x] -> readFile x 
@@ -14,7 +17,7 @@ main = do
         file <- cs
         let contents = map (\x -> case words x of 
                                     a:b:_ -> p (read a) (read b)
-                                    _     -> error "invalid input format") $ lines file
+                                    _     -> error "invalid input format") . lines $ file
         let (row1, row2) = covarianceMatrix contents 
         print row1
         print row2
@@ -22,6 +25,8 @@ main = do
 
 matrix :: a -> a -> a -> a -> Matrix a
 matrix x1 x2 x3 x4 = ((x1,x2),(x3,x4))
+
+mat' = (,) &&& (,)
 
 covarianceMatrix :: [(Double,Double)] -> Matrix Double
 covarianceMatrix coords = matrix tl tr bl br
